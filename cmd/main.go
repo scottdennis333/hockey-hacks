@@ -76,15 +76,17 @@ var AS = AddPlayer{PlayerKey: "419.p.8033"}
 var requestBody AddPlayers
 
 func main() {
-	godotenv.Load()
+	godotenv.Load("../.env")
 
-	f, err := os.OpenFile("mylog.log", os.O_RDWR | os.O_CREATE | os.O_APPEND, 0666)
+	f, err := os.OpenFile("../mylog.log", os.O_RDWR | os.O_CREATE | os.O_APPEND, 0666)
 	if err != nil {
 		log.Fatalln("error opening file: %v", err)
 	}
 	defer f.Close()
 
 	log.SetOutput(f)
+	
+	log.Println("Starting Program")
 
 	wg.Add(1)
 	go yahooRefreshAuth()
@@ -173,6 +175,7 @@ func determineStaringGoalies() {
 			break
 		}
 	}
+	log.Println(staringGoalies)
 }
 
 func yahooSwapPlayers() {
@@ -236,5 +239,6 @@ func yahooSwapPlayers() {
 		log.Fatalln(err)
 	}
 	log.Println(string(body))
+	log.Print("Ending Program\n")
 }
 
