@@ -15,6 +15,7 @@ import (
 	"strings"
 	"sync"
 	"time"
+	"net/smtp"
 )
 
 type Goalie struct {
@@ -121,11 +122,16 @@ func yahooRefreshAuth() {
 	if err != nil {
 		log.Fatalln(err)
 	}
+	
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		log.Fatalln(err)
 	}
-	json.Unmarshal([]byte(body), &yahooAuth)
+	if resp.StatusCode == 200 {
+		json.Unmarshal([]byte(body), &yahooAuth)
+	} else {
+		sendEmail(body)
+	}
 }
 
 func startingGoalies() {
@@ -240,5 +246,28 @@ func yahooSwapPlayers() {
 	}
 	log.Println(string(body))
 	log.Println("Ending Program\n")
+}
+
+func sendEmail (respBody []byte) {
+ 	from := os.Getenv("EMAIL_ADDRESS")
+    password := os.Getenv("EMAIL_PASSWORD")
+
+    toEmailAddress := os.Getenv("EMAIL_ADDRESS")
+    to := []string{toEmailAddress}
+
+    host := "smtp.gmail.com"
+    port := "587"
+    address := host + ":" + port
+
+    subject := "Subject: Yahoo Refresh Token Failure\n"
+    body := "YAHOO REFRESH TOKEN FAILURE\n\n\nResponse:\n" + string(respBody)
+    message := []byte(subject + body)
+
+    auth := smtp.PlainAuth("", from, password, host)
+
+    err := smtp.SendMail(address, auth, from, to, message)
+    if err != nil {
+        panic(err)
+    }
 }
 
