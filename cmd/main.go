@@ -67,15 +67,6 @@ type AddPlayers struct {
 
 var staringGoalies StartingGoalie
 var yahooAuth YahooAuth
-var games []Game
-var wg sync.WaitGroup
-
-var LU = AddPlayer{PlayerKey: "419.p.5853"}
-var JS = AddPlayer{PlayerKey: "419.p.7626"}
-var VN = AddPlayer{PlayerKey: "419.p.6408"}
-var AS = AddPlayer{PlayerKey: "419.p.8033"}
-
-var requestBody AddPlayers
 
 func main() {
 	godotenv.Load("../.env")
@@ -90,17 +81,21 @@ func main() {
 
 	log.Println("Starting Program")
 
+	var wg sync.WaitGroup
 	wg.Add(1)
-	go yahooRefreshAuth()
+	go yahooRefreshAuth(&wg)
 	wg.Add(1)
-	go startingGoalies()
+	go startingGoalies(&wg)
 	wg.Wait()
 
 	yahooSwapPlayers()
+
+	log.Println("Ending Program\n")
 }
 
-func yahooRefreshAuth() {
+func yahooRefreshAuth(wg *sync.WaitGroup) {
 	defer wg.Done()
+
 	tok := base64.StdEncoding.EncodeToString([]byte(os.Getenv("YAHOO_CLIENT_ID") + ":" + os.Getenv("YAHOO_CLIENT_SECRET")))
 
 	data := url.Values{}
@@ -113,21 +108,19 @@ func yahooRefreshAuth() {
 	if err != nil {
 		log.Fatalln(err)
 	}
-
 	req.Header = http.Header{
 		"Authorization": {"Basic " + tok},
 		"Content-Type":  {"application/x-www-form-urlencoded"},
 	}
-
 	resp, err := client.Do(req)
 	if err != nil {
 		log.Fatalln(err)
 	}
-
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		log.Fatalln(err)
 	}
+
 	if resp.StatusCode == 200 {
 		json.Unmarshal([]byte(body), &yahooAuth)
 	} else {
@@ -135,8 +128,9 @@ func yahooRefreshAuth() {
 	}
 }
 
-func startingGoalies() {
+func startingGoalies(wg *sync.WaitGroup) {
 	defer wg.Done()
+
 	date := time.Now().Format("2006-01-02")
 	client := http.Client{}
 	sportsDataUrl := "https://api.sportsdata.io/v3/nhl/projections/json/StartingGoaltendersByDate/" + date
@@ -144,7 +138,6 @@ func startingGoalies() {
 	if err != nil {
 		log.Fatalln(err)
 	}
-
 	req.Header = http.Header{
 		"Content-Type":              {"application/json"},
 		"Ocp-Apim-Subscription-Key": {os.Getenv("SPORTS_DATA_KEY")},
@@ -158,12 +151,13 @@ func startingGoalies() {
 		log.Fatalln(err)
 	}
 
+	var games []Game
 	json.Unmarshal([]byte(body), &games)
 
-	determineStaringGoalies()
+	determineStaringGoalies(games)
 }
 
-func determineStaringGoalies() {
+func determineStaringGoalies(games []Game) {
 	for _, n := range games {
 		switch n.HomeTeam {
 		case "BOS":
@@ -186,8 +180,14 @@ func determineStaringGoalies() {
 }
 
 func yahooSwapPlayers() {
+	var requestBody AddPlayers
 	requestBody.Roster.CoverageType = "date"
 	requestBody.Roster.Date = time.Now().Format("2006-01-02")
+
+	LU := AddPlayer{PlayerKey: "419.p.5853"}
+	JS := AddPlayer{PlayerKey: "419.p.7626"}
+	VN := AddPlayer{PlayerKey: "419.p.6408"}
+	AS := AddPlayer{PlayerKey: "419.p.8033"}
 
 	if (staringGoalies.NJ == Goalie{} && staringGoalies.BOS == Goalie{}) {
 		return
@@ -245,8 +245,8 @@ func yahooSwapPlayers() {
 	if err != nil {
 		log.Fatalln(err)
 	}
+
 	log.Println(string(body))
-	log.Println("Ending Program\n")
 }
 
 func sendEmail(respBody []byte) {
