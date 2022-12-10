@@ -125,6 +125,7 @@ func yahooRefreshAuth(wg *sync.WaitGroup) {
 		json.Unmarshal([]byte(body), &yahooAuth)
 	} else {
 		sendEmail(body)
+		log.Fatalln("Yahoo Auth Failed")
 	}
 }
 
