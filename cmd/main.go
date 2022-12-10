@@ -239,6 +239,6 @@ func yahooSwapPlayers() {
 		log.Fatalln(err)
 	}
 	log.Println(string(body))
-	log.Print("Ending Program\n")
+	log.Println("Ending Program\n")
 }
 
