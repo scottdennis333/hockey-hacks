@@ -90,7 +90,7 @@ func main() {
 
 	yahooSwapPlayers()
 
-	log.Printf("\nEnding Program\n")
+	log.Printf("Ending Program\n")
 }
 
 func yahooRefreshAuth(wg *sync.WaitGroup) {
