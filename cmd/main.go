@@ -73,7 +73,7 @@ func main() {
 
 	f, err := os.OpenFile("../mylog.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 	if err != nil {
-		log.Fatalln("error opening file: %v", err)
+		log.Fatalln(err)
 	}
 	defer f.Close()
 
@@ -90,7 +90,7 @@ func main() {
 
 	yahooSwapPlayers()
 
-	log.Println("Ending Program\n")
+	log.Printf("\nEnding Program\n")
 }
 
 func yahooRefreshAuth(wg *sync.WaitGroup) {
