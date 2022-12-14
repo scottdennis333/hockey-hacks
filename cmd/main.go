@@ -65,7 +65,6 @@ type AddPlayers struct {
 	} `xml:"roster"`
 }
 
-var staringGoalies StartingGoalie
 var yahooAuth YahooAuth
 
 func main() {
@@ -82,13 +81,12 @@ func main() {
 	log.Println("Starting Program")
 
 	var wg sync.WaitGroup
-	wg.Add(1)
+	wg.Add(2)
 	go yahooRefreshAuth(&wg)
-	wg.Add(1)
-	go startingGoalies(&wg)
+	startingGoalies := getStartingGoalies(&wg)
 	wg.Wait()
 
-	yahooSwapPlayers()
+	yahooSwapPlayers(startingGoalies)
 
 	log.Printf("Ending Program\n")
 }
@@ -129,7 +127,7 @@ func yahooRefreshAuth(wg *sync.WaitGroup) {
 	}
 }
 
-func startingGoalies(wg *sync.WaitGroup) {
+func getStartingGoalies(wg *sync.WaitGroup) StartingGoalie {
 	defer wg.Done()
 
 	date := time.Now().Format("2006-01-02")
@@ -155,32 +153,34 @@ func startingGoalies(wg *sync.WaitGroup) {
 	var games []Game
 	json.Unmarshal([]byte(body), &games)
 
-	determineStaringGoalies(games)
+	return determineStaringGoalies(games)
 }
 
-func determineStaringGoalies(games []Game) {
+func determineStaringGoalies(games []Game) StartingGoalie {
+	var startingGoalies StartingGoalie
 	for _, n := range games {
 		switch n.HomeTeam {
 		case "BOS":
-			staringGoalies.BOS = n.HomeGoaltender
+			startingGoalies.BOS = n.HomeGoaltender
 			break
 		case "NJ":
-			staringGoalies.NJ = n.HomeGoaltender
+			startingGoalies.NJ = n.HomeGoaltender
 			break
 		}
 		switch n.AwayTeam {
 		case "BOS":
-			staringGoalies.BOS = n.AwayGoaltender
+			startingGoalies.BOS = n.AwayGoaltender
 			break
 		case "NJ":
-			staringGoalies.NJ = n.AwayGoaltender
+			startingGoalies.NJ = n.AwayGoaltender
 			break
 		}
 	}
-	log.Println(staringGoalies)
+	log.Println(startingGoalies)
+	return startingGoalies
 }
 
-func yahooSwapPlayers() {
+func yahooSwapPlayers(startingGoalies StartingGoalie) {
 	var requestBody AddPlayers
 	requestBody.Roster.CoverageType = "date"
 	requestBody.Roster.Date = time.Now().Format("2006-01-02")
@@ -190,30 +190,30 @@ func yahooSwapPlayers() {
 	VN := AddPlayer{PlayerKey: "419.p.6408"}
 	AS := AddPlayer{PlayerKey: "419.p.8033"}
 
-	if (staringGoalies.NJ == Goalie{} && staringGoalies.BOS == Goalie{}) {
+	if (startingGoalies.NJ == Goalie{} && startingGoalies.BOS == Goalie{}) {
 		return
 	}
-	if (staringGoalies.NJ == Goalie{}) {
+	if (startingGoalies.NJ == Goalie{}) {
 		LU.Position = "G"
 		JS.Position = "G"
 		VN.Position = "BN"
 		AS.Position = "BN"
-	} else if (staringGoalies.BOS == Goalie{}) {
+	} else if (startingGoalies.BOS == Goalie{}) {
 		LU.Position = "BN"
 		JS.Position = "BN"
 		VN.Position = "G"
 		AS.Position = "G"
 	} else {
-		if staringGoalies.NJ.LastName == "Vanecek" {
+		if startingGoalies.NJ.LastName == "Vanecek" {
 			VN.Position = "G"
 			AS.Position = "BN"
 		} else {
 			VN.Position = "BN"
 			AS.Position = "G"
 		}
-		if staringGoalies.BOS.LastName == "Ullmark" {
-			LU.Position = "BN"
-			JS.Position = "G"
+		if startingGoalies.BOS.LastName == "Ullmark" {
+			LU.Position = "G"
+			JS.Position = "BN"
 		} else {
 			LU.Position = "BN"
 			JS.Position = "G"
