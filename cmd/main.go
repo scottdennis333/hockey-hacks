@@ -189,6 +189,7 @@ func yahooSwapPlayers(startingGoalies StartingGoalie) {
 	JS := AddPlayer{PlayerKey: "419.p.7626"}
 	VN := AddPlayer{PlayerKey: "419.p.6408"}
 	AS := AddPlayer{PlayerKey: "419.p.8033"}
+	MB := AddPlayer{PlayerKey: "419.p.6784"}
 
 	if (startingGoalies.NJ == Goalie{} && startingGoalies.BOS == Goalie{}) {
 		return
@@ -198,18 +199,22 @@ func yahooSwapPlayers(startingGoalies StartingGoalie) {
 		JS.Position = "G"
 		VN.Position = "BN"
 		AS.Position = "BN"
+		MB.Position = "BN"
 	} else if (startingGoalies.BOS == Goalie{}) {
 		LU.Position = "BN"
 		JS.Position = "BN"
 		VN.Position = "G"
 		AS.Position = "G"
+		MB.Position = "BN"
 	} else {
 		if startingGoalies.NJ.LastName == "Vanecek" {
 			VN.Position = "G"
 			AS.Position = "BN"
+			MB.Position = "BN"
 		} else {
 			VN.Position = "BN"
-			AS.Position = "G"
+			AS.Position = "BN"
+			MB.Position = "G"
 		}
 		if startingGoalies.BOS.LastName == "Ullmark" {
 			LU.Position = "G"
