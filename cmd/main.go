@@ -204,8 +204,8 @@ func yahooSwapPlayers(startingGoalies StartingGoalie) {
 		LU.Position = "BN"
 		JS.Position = "BN"
 		VN.Position = "G"
-		AS.Position = "G"
-		MB.Position = "BN"
+		AS.Position = "BN"
+		MB.Position = "G"
 	} else {
 		if startingGoalies.NJ.LastName == "Vanecek" {
 			VN.Position = "G"
