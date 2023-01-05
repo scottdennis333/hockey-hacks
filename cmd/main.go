@@ -151,7 +151,12 @@ func getStartingGoalies(wg *sync.WaitGroup) StartingGoalie {
 	}
 
 	var games []Game
-	json.Unmarshal([]byte(body), &games)
+	if resp.StatusCode == 200 {
+		json.Unmarshal([]byte(body), &games)
+	} else {
+		sendEmail(body)
+		log.Fatalln("Failed to get starting goalies")
+	}
 
 	return determineStaringGoalies(games)
 }
@@ -250,6 +255,11 @@ func yahooSwapPlayers(startingGoalies StartingGoalie) {
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		log.Fatalln(err)
+	}
+
+	if resp.StatusCode != 200 {
+		sendEmail(body)
+		log.Fatalln("Failed to switch starting goalies")
 	}
 
 	log.Println(string(body))
