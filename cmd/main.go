@@ -216,10 +216,14 @@ func yahooSwapPlayers(startingGoalies StartingGoalie) {
 			VN.Position = "G"
 			AS.Position = "BN"
 			MB.Position = "BN"
-		} else {
+		} else if startingGoalies.NJ.LastName == "Blackwood" {
 			VN.Position = "BN"
 			AS.Position = "BN"
 			MB.Position = "G"
+		} else {
+			VN.Position = "BN"
+			AS.Position = "G"
+			MB.Position = "BN"
 		}
 		if startingGoalies.BOS.LastName == "Ullmark" {
 			LU.Position = "G"
@@ -257,9 +261,10 @@ func yahooSwapPlayers(startingGoalies StartingGoalie) {
 		log.Fatalln(err)
 	}
 
-	if resp.StatusCode != 200 {
+	if resp.StatusCode >= 400 {
 		sendEmail(body)
 		log.Fatalln("Failed to switch starting goalies")
+		log.Fatalln(requestBody)
 	}
 
 	log.Println(string(body))
