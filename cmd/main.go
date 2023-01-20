@@ -209,7 +209,7 @@ func yahooSwapPlayers(startingGoalies StartingGoalie) {
 		LU.Position = "BN"
 		JS.Position = "BN"
 		VN.Position = "G"
-		AS.Position = "BN"
+		AS.Position = "G"
 		MB.Position = "G"
 	} else {
 		if startingGoalies.NJ.LastName == "Vanecek" {
@@ -232,8 +232,8 @@ func yahooSwapPlayers(startingGoalies StartingGoalie) {
 			LU.Position = "BN"
 			JS.Position = "G"
 		}
-	}
-	requestBody.Roster.Players.Player = []AddPlayer{LU, JS, VN, AS}
+	}	
+	requestBody.Roster.Players.Player = []AddPlayer{LU, JS, VN, AS, MB}
 
 	log.Println(requestBody)
 
