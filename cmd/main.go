@@ -235,6 +235,8 @@ func yahooSwapPlayers(startingGoalies StartingGoalie) {
 	}
 	requestBody.Roster.Players.Player = []AddPlayer{LU, JS, VN, AS}
 
+	log.Println(requestBody)
+
 	w := &bytes.Buffer{}
 	w.Write([]byte(xml.Header))
 	enc := xml.NewEncoder(w)
