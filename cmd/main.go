@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"encoding/xml"
 	"io"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"net/smtp"
@@ -146,7 +145,7 @@ func getStartingGoalies(wg *sync.WaitGroup) StartingGoalie {
 	if err != nil {
 		log.Fatalln(err)
 	}
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -249,7 +248,7 @@ func yahooSwapPlayers(startingGoalies StartingGoalie) {
 	if err != nil {
 		log.Fatalln(err)
 	}
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		log.Fatalln(err)
 	}
