@@ -5,6 +5,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"encoding/xml"
+	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -29,8 +30,8 @@ type Goalie struct {
 }
 
 type StartingGoalie struct {
-	NJ  Goalie `json:"nj"`
-	BOS Goalie `json:"bos"`
+	COL  Goalie `json:"col"`
+	DET Goalie `json:"det"`
 }
 
 type Game struct {
@@ -114,7 +115,7 @@ func yahooRefreshAuth(wg *sync.WaitGroup) {
 	if err != nil {
 		log.Fatalln(err)
 	}
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -165,19 +166,19 @@ func determineStaringGoalies(games []Game) StartingGoalie {
 	var startingGoalies StartingGoalie
 	for _, n := range games {
 		switch n.HomeTeam {
-		case "BOS":
-			startingGoalies.BOS = n.HomeGoaltender
+		case "COL":
+			startingGoalies.COL = n.HomeGoaltender
 			break
-		case "NJ":
-			startingGoalies.NJ = n.HomeGoaltender
+		case "DET":
+			startingGoalies.DET = n.HomeGoaltender
 			break
 		}
 		switch n.AwayTeam {
-		case "BOS":
-			startingGoalies.BOS = n.AwayGoaltender
+		case "COL":
+			startingGoalies.COL = n.AwayGoaltender
 			break
-		case "NJ":
-			startingGoalies.NJ = n.AwayGoaltender
+		case "DET":
+			startingGoalies.DET = n.AwayGoaltender
 			break
 		}
 	}
@@ -190,50 +191,40 @@ func yahooSwapPlayers(startingGoalies StartingGoalie) {
 	requestBody.Roster.CoverageType = "date"
 	requestBody.Roster.Date = time.Now().Format("2006-01-02")
 
-	LU := AddPlayer{PlayerKey: "419.p.5853"}
-	JS := AddPlayer{PlayerKey: "419.p.7626"}
-	VN := AddPlayer{PlayerKey: "419.p.6408"}
-	AS := AddPlayer{PlayerKey: "419.p.8033"}
-	MB := AddPlayer{PlayerKey: "419.p.6784"}
+	ag := AddPlayer{PlayerKey: "419.p.7736"}
+	pf := AddPlayer{PlayerKey: "419.p.7874"}
+	vh := AddPlayer{PlayerKey: "419.p.6462"}
+	jr := AddPlayer{PlayerKey: "419.p.4369"}
 
-	if (startingGoalies.NJ == Goalie{} && startingGoalies.BOS == Goalie{}) {
+	if (startingGoalies.COL == Goalie{} && startingGoalies.DET == Goalie{}) {
 		return
 	}
-	if (startingGoalies.NJ == Goalie{}) {
-		LU.Position = "G"
-		JS.Position = "G"
-		VN.Position = "BN"
-		AS.Position = "BN"
-		MB.Position = "BN"
-	} else if (startingGoalies.BOS == Goalie{}) {
-		LU.Position = "BN"
-		JS.Position = "BN"
-		VN.Position = "G"
-		AS.Position = "G"
-		MB.Position = "G"
+	if (startingGoalies.DET == Goalie{}) {
+		ag.Position = "G"
+		pf.Position = "G"
+		vh.Position = "BN"
+		jr.Position = "BN"
+	} else if (startingGoalies.COL == Goalie{}) {
+		ag.Position = "BN"
+		pf.Position = "BN"
+		vh.Position = "G"
+		jr.Position = "G"
 	} else {
-		if startingGoalies.NJ.LastName == "Vanecek" {
-			VN.Position = "G"
-			AS.Position = "BN"
-			MB.Position = "BN"
-		} else if startingGoalies.NJ.LastName == "Blackwood" {
-			VN.Position = "BN"
-			AS.Position = "BN"
-			MB.Position = "G"
+		if startingGoalies.COL.LastName == "Georgiev" {
+			ag.Position = "G"
+			pf.Position = "BN"
 		} else {
-			VN.Position = "BN"
-			AS.Position = "G"
-			MB.Position = "BN"
-		}
-		if startingGoalies.BOS.LastName == "Ullmark" {
-			LU.Position = "G"
-			JS.Position = "BN"
+			ag.Position = "BN"
+			pf.Position = "G"
+		if startingGoalies.DET.LastName == "Husso" {
+			vh.Position = "G"
+			jr.Position = "BN"
 		} else {
-			LU.Position = "BN"
-			JS.Position = "G"
+			vh.Position = "BN"
+			jr.Position = "G"
 		}
-	}	
-	requestBody.Roster.Players.Player = []AddPlayer{LU, JS, VN, AS, MB}
+	}
+	requestBody.Roster.Players.Player = []AddPlayer{ag, pf, vh, jr}
 
 	log.Println(requestBody)
 
