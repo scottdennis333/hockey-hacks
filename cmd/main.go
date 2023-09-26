@@ -29,7 +29,7 @@ type Goalie struct {
 }
 
 type StartingGoalie struct {
-	COL  Goalie `json:"col"`
+	COL Goalie `json:"col"`
 	DET Goalie `json:"det"`
 }
 
@@ -215,6 +215,7 @@ func yahooSwapPlayers(startingGoalies StartingGoalie) {
 		} else {
 			ag.Position = "BN"
 			pf.Position = "G"
+		}
 		if startingGoalies.DET.LastName == "Husso" {
 			vh.Position = "G"
 			jr.Position = "BN"
@@ -273,8 +274,8 @@ func sendEmail(respBody []byte) {
 	port := "587"
 	address := host + ":" + port
 
-	subject := "Subject: Yahoo Refresh Token Failure\n"
-	body := "YAHOO REFRESH TOKEN FAILURE\n\n\nResponse:\n" + string(respBody)
+	subject := "Subject: Goalie Switcher Failed\n"
+	body := string(respBody)
 	message := []byte(subject + body)
 
 	auth := smtp.PlainAuth("", from, password, host)
