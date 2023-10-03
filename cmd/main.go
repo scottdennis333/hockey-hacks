@@ -190,41 +190,61 @@ func yahooSwapPlayers(startingGoalies StartingGoalie) {
 	requestBody.Roster.CoverageType = "date"
 	requestBody.Roster.Date = time.Now().Format("2006-01-02")
 
-	ag := AddPlayer{PlayerKey: "419.p.7736"}
-	pf := AddPlayer{PlayerKey: "419.p.7874"}
-	vh := AddPlayer{PlayerKey: "419.p.6462"}
-	jr := AddPlayer{PlayerKey: "419.p.4369"}
+	// starting and backups
+	ag := AddPlayer{PlayerKey: "427.p.7736"}
+	pf := AddPlayer{PlayerKey: "427.p.7874"}
+	vh := AddPlayer{PlayerKey: "427.p.6462"}
+	jr := AddPlayer{PlayerKey: "427.p.4369"}
+
+	// third string
+	ja := AddPlayer{PlayerKey: "427.p.7962"}
+	al := AddPlayer{PlayerKey: "427.p.7089"}
 
 	if (startingGoalies.COL == Goalie{} && startingGoalies.DET == Goalie{}) {
 		return
 	}
 	if (startingGoalies.DET == Goalie{}) {
 		ag.Position = "G"
-		pf.Position = "G"
+		ja.Position = "G"
+		pf.Position = "BN"
 		vh.Position = "BN"
 		jr.Position = "BN"
+		al.Position = "BN"
 	} else if (startingGoalies.COL == Goalie{}) {
 		ag.Position = "BN"
-		pf.Position = "BN"
+		ja.Position = "BN"
 		vh.Position = "G"
 		jr.Position = "G"
+		al.Position = "G"
 	} else {
 		if startingGoalies.COL.LastName == "Georgiev" {
 			ag.Position = "G"
 			pf.Position = "BN"
+			ja.Position = "BN"
+		} else if startingGoalies.COL.LastName == "Francouz" {
+			ag.Position = "BN"
+			pf.Position = "G"
+			ja.Position = "BN"
 		} else {
 			ag.Position = "BN"
 			pf.Position = "G"
+			ja.Position = "BN"
 		}
 		if startingGoalies.DET.LastName == "Husso" {
 			vh.Position = "G"
 			jr.Position = "BN"
-		} else {
+			al.Position = "BN"
+		} else if startingGoalies.COL.LastName == "Reimer" {
 			vh.Position = "BN"
 			jr.Position = "G"
+			al.Position = "BN"
+		} else {
+			vh.Position = "BN"
+			jr.Position = "BN"
+			al.Position = "G"
 		}
 	}
-	requestBody.Roster.Players.Player = []AddPlayer{ag, pf, vh, jr}
+	requestBody.Roster.Players.Player = []AddPlayer{ag, ja, vh, jr}
 
 	log.Println(requestBody)
 
@@ -236,7 +256,7 @@ func yahooSwapPlayers(startingGoalies StartingGoalie) {
 	}
 
 	client := http.Client{}
-	yahooUrl := "https://fantasysports.yahooapis.com/fantasy/v2/team/419.l.6795.t." + os.Getenv("YAHOO_TEAM_ID") + "/roster"
+	yahooUrl := "https://fantasysports.yahooapis.com/fantasy/v2/team/" + os.Getenv("YAHOO_LEAGUE_ID") + ".t." + os.Getenv("YAHOO_TEAM_ID") + "/roster"
 	req, err := http.NewRequest("PUT", yahooUrl, w)
 	if err != nil {
 		log.Fatalln(err)
