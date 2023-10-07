@@ -206,13 +206,14 @@ func yahooSwapPlayers(startingGoalies StartingGoalie) {
 	if (startingGoalies.DET == Goalie{}) {
 		ag.Position = "G"
 		ja.Position = "G"
-		pf.Position = "BN"
+		pf.Position = "G"
 		vh.Position = "BN"
 		jr.Position = "BN"
 		al.Position = "BN"
 	} else if (startingGoalies.COL == Goalie{}) {
 		ag.Position = "BN"
 		ja.Position = "BN"
+		pf.Position = "BN"
 		vh.Position = "G"
 		jr.Position = "G"
 		al.Position = "G"
