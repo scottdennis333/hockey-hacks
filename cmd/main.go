@@ -65,6 +65,25 @@ type AddPlayers struct {
 	} `xml:"roster"`
 }
 
+type AddDropPlayer struct {
+	PlayerKey       string `xml:"player_key"`
+	TransactionData struct {
+		Type               string `xml:"type"`
+		DestinationTeamKey string `xml:"destination_team_key,omitempty"`
+		SourceTeamKey      string `xml:"source_team_key,omitempty"`
+	} `xml:"transaction_data"`
+}
+
+type AddDropPlayers struct {
+	XMLName     xml.Name `xml:"fantasy_content"`
+	Transaction struct {
+		Type    string `xml:"type"`
+		Players struct {
+			AddDropPlayer []AddDropPlayer `xml:"player"`
+		} `xml:"players"`
+	} `xml:"transaction"`
+}
+
 var yahooAuth YahooAuth
 
 func main() {
@@ -197,6 +216,7 @@ func yahooSwapPlayers(startingGoalies StartingGoalie) {
 	jr := AddPlayer{PlayerKey: "427.p.4369"}
 
 	// third string
+	ip := AddPlayer{PlayerKey: "427.p.8011"}
 	ja := AddPlayer{PlayerKey: "427.p.7962"}
 	al := AddPlayer{PlayerKey: "427.p.7089"}
 
@@ -205,41 +225,53 @@ func yahooSwapPlayers(startingGoalies StartingGoalie) {
 	}
 	if (startingGoalies.DET == Goalie{}) {
 		ag.Position = "G"
-		ja.Position = "G"
 		pf.Position = "G"
+		ip.Position = "G"
+		ja.Position = "G"
 		vh.Position = "BN"
 		jr.Position = "BN"
 		al.Position = "BN"
 	} else if (startingGoalies.COL == Goalie{}) {
 		ag.Position = "BN"
-		ja.Position = "BN"
 		pf.Position = "BN"
+		ip.Position = "BN"
+		ja.Position = "BN"
 		vh.Position = "G"
 		jr.Position = "G"
 		al.Position = "G"
 	} else {
 		if startingGoalies.COL.LastName == "Georgiev" {
 			ag.Position = "G"
+			ip.Position = "BN"
+			pf.Position = "BN"
+			ja.Position = "BN"
+		} else if startingGoalies.COL.LastName == "Prosvetov" {
+			ag.Position = "BN"
+			ip.Position = "G"
 			pf.Position = "BN"
 			ja.Position = "BN"
 		} else if startingGoalies.COL.LastName == "Francouz" {
 			ag.Position = "BN"
+			ip.Position = "BN"
 			pf.Position = "G"
 			ja.Position = "BN"
 		} else {
 			ag.Position = "BN"
-			pf.Position = "G"
-			ja.Position = "BN"
+			ip.Position = "BN"
+			pf.Position = "BN"
+			ja.Position = "G"
 		}
 		if startingGoalies.DET.LastName == "Husso" {
 			vh.Position = "G"
 			jr.Position = "BN"
 			al.Position = "BN"
 		} else if startingGoalies.COL.LastName == "Reimer" {
+			addDrop(jr.PlayerKey, al.PlayerKey)
 			vh.Position = "BN"
 			jr.Position = "G"
 			al.Position = "BN"
 		} else {
+			addDrop(al.PlayerKey, jr.PlayerKey)
 			vh.Position = "BN"
 			jr.Position = "BN"
 			al.Position = "G"
@@ -282,6 +314,59 @@ func yahooSwapPlayers(startingGoalies StartingGoalie) {
 	}
 
 	log.Println(string(body))
+}
+
+func addDrop(add string, drop string) {
+	var requestBody AddDropPlayers
+	requestBody.Transaction.Type = "add/drop"
+
+	var addPlayer AddDropPlayer
+	addPlayer.PlayerKey = add
+	addPlayer.TransactionData.Type = "add"
+	addPlayer.TransactionData.DestinationTeamKey = os.Getenv("YAHOO_LEAGUE_ID") + ".t." +  os.Getenv("YAHOO_TEAM_ID")
+
+	var dropPlayer AddDropPlayer
+	dropPlayer.PlayerKey = drop
+	dropPlayer.TransactionData.Type = "drop"
+	dropPlayer.TransactionData.SourceTeamKey = os.Getenv("YAHOO_LEAGUE_ID") + ".t." + os.Getenv("YAHOO_TEAM_ID")
+
+	requestBody.Transaction.Players.AddDropPlayer = []AddDropPlayer{addPlayer, dropPlayer}
+
+	w := &bytes.Buffer{}
+	w.Write([]byte(xml.Header))
+	enc := xml.NewEncoder(w)
+	if err := enc.Encode(requestBody); err != nil {
+		log.Fatal(err)
+	}
+
+	log.Println(w)
+
+	client := http.Client{}
+	yahooUrl := "https://fantasysports.yahooapis.com/fantasy/v2/league/" + os.Getenv("YAHOO_LEAGUE_ID") + "/transactions"
+	req, err := http.NewRequest("POST", yahooUrl, w)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	req.Header = http.Header{
+		"Authorization": {"Bearer " + yahooAuth.AccessToken},
+		"Content-Type":  {"application/xml"},
+	}
+	resp, err := client.Do(req)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	log.Println(string(body))
+
+	if resp.StatusCode >= 400 {
+		sendEmail(body)
+		log.Fatalln("Failed adding/dropping players")
+		log.Fatalln(requestBody)
+	}
 }
 
 func sendEmail(respBody []byte) {
