@@ -1,3 +1,5 @@
 .env
 mylog.log
 .idea/
+main
+logs.log
