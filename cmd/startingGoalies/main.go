@@ -1,8 +1,8 @@
 package main
 
 import (
-	"hockey-hacks/cmd/sportsData"
-	"hockey-hacks/cmd/yahoo"
+	"hockey-hacks/pkg/sportsData"
+	"hockey-hacks/pkg/yahoo"
 	"log"
 	"os"
 	"sync"

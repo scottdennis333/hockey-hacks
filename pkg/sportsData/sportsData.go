@@ -3,8 +3,8 @@ package sportsData
 import (
 	"encoding/json"
 	"fmt"
-	"hockey-hacks/cmd/email"
-	"hockey-hacks/cmd/goalies"
+	"hockey-hacks/pkg/email"
+	"hockey-hacks/pkg/goalies"
 	"io"
 	"log"
 	"net/http"
