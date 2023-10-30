@@ -284,7 +284,7 @@ func (yc *YahooClient) SwapPlayers(teamGoalies goalies.Goalies) {
 		}
 		if teamGoalies.DET.LastName == "Husso" {
 			vh.Position, jr.Position, al.Position = "G", "BN", "BN"
-		} else if teamGoalies.COL.LastName == "Reimer" {
+		} else if teamGoalies.DET.LastName == "Reimer" {
 			yc.addDrop(jr.PlayerKey, al.PlayerKey)
 			vh.Position, jr.Position, al.Position = "BN", "G", "BN"
 		} else {
