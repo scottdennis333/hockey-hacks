@@ -7,30 +7,30 @@ function Forwards(props) {
   const { leftwings } = props;
   const { rightwings } = props;
 
+  console.log(centers);
   return (
     <Grid container spacing={2}>
       <Grid xs={4} direction={'column'} container spacing={1}>
         <h2 className="position" style={{ textAlign: "center" }}>Left Wing</h2>
         {leftwings.map((player, index) => {
           return (
-            <Player player={player} index={index} />
+            <Player key={`lw-${index}`} player={player} index={index} />
           )
         })}
       </Grid>
       <Grid xs={4} direction={'column'} container spacing={2}>
         <h2 className="position" style={{ textAlign: "center" }}>Center</h2>
-
-        {centers.map(player => {
+        {centers.map((player, index) => {
           return (
-            <Player player={player} />
+            <Player key={`c-${index}`} player={player} />
           )
         })}
       </Grid>
       <Grid xs={4} direction={'column'} container spacing={2}>
         <h2 className="position" style={{ textAlign: "center" }}>Right Wing</h2>
-        {rightwings.map(player => {
+        {rightwings.map((player, index) => {
           return (
-            <Player player={player} />
+            <Player key={`rw-${index}`} player={player} />
           )
         })}
       </Grid>

@@ -11,7 +11,7 @@ function Bench(props) {
       <h2 className="position" style={{ textAlign: "center" }}>Bench</h2>
       {bench.map((player, index) => {
         return (
-          <Player player={player} index={index} />
+          <Player key={`bn-${index}`} player={player} index={index} />
         )
       })}
     </Grid>

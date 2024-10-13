@@ -11,7 +11,7 @@ function Util(props) {
       <h2 className="position" style={{ textAlign: "center" }}>Util</h2>
       {util.map((player, index) => {
         return (
-          <Player player={player} index={index} />
+          <Player key={`util-${index}`} player={player} index={index} />
         )
       })}
     </Grid>

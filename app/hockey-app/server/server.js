@@ -3,9 +3,9 @@ const express = require('express');
 const app = express();
 const YahooFantasy = require('yahoo-fantasy');
 
-const clientId = process.env.YAHOO_CLIENT_ID;
-const clientSecret = process.env.YAHOO_CLIENT_SECRET;
-const refreshToken = process.env.YAHOO_REFRESH_TOKEN;
+const clientId = "dj0yJmk9bnBnWXA5OUFhdUNXJmQ9WVdrOVUzWnphemhVVWtJbWNHbzlNQT09JnM9Y29uc3VtZXJzZWNyZXQmc3Y9MCZ4PTY4";
+const clientSecret = "a80025811fcc0693e722859d7bf6f02320d1b90e";
+const refreshToken = 'AOvrGGWdy0cs6Gpsf0Gukffn0eUb~000~6HqGObV0E8DEFqB8cddp9eia';
 const tokenEndpoint = 'https://api.login.yahoo.com/oauth2/get_token';
 
 const yahoo = new YahooFantasy({
@@ -149,21 +149,25 @@ async function getPlayerData(teamId) {
   }
 }
 
-const determineLineup = (players = []) => {
-  const positions = { 'C': 2, 'LW': 2, 'RW': 2, 'D': 4, 'UTIL': 1, 'G': 4, 'BN': 4 };
+const determineLineup = (players = [], year = '453.l.4965') => {
+  let positions = { 'C': 2, 'LW': 2, 'RW': 2, 'D': 4, 'UTIL': 1, 'G': 2, 'BN': 4 };
+  if (year.includes('453.l.4965')) {
+    positions = { 'C': 3, 'LW': 2, 'RW': 2, 'D': 3, 'UTIL': 1, 'G': 4, 'BN': 4 };
+  }
   const lineup = { 'C': [], 'LW': [], 'RW': [], 'D': [], 'UTIL': [], 'G': [], 'BN': [] };
 
   // Sort players by the number of eligible positions (ascending order)
-  if (Array.isArray(players)) {
-    players.sort((a, b) => a.positions.length - b.positions.length);
+  if (!Array.isArray(players)) {
+    return lineup;
   }
+    players.sort((a, b) => a.positions.length - b.positions.length);
 
   // Ensure all players have 'UTIL' in their positions, except those with 'G' and 'D'
-  players.forEach(player => {
-    if (!player.positions.includes('UTIL') && !player.positions.includes('G') && !player.positions.includes('D')) {
-      player.positions.push('UTIL');
-    }
-  });
+    players.forEach(player => {
+      if (!player.positions.includes('UTIL') && !player.positions.includes('G') && !player.positions.includes('D')) {
+        player.positions.push('UTIL');
+      }
+    });
 
   // Add empty elements to lineup object to match the positions object
   for (const pos in positions) {
@@ -254,8 +258,9 @@ app.get('/teams/:leagueId', async (req, res) => {
 });
 
 app.get('/api/:teamId/', async (req, res) => {
-  const players = await getPlayerData(req.params.teamId);
-  const lineup = determineLineup(players);
+  const { teamId } = req.params;
+  const players = await getPlayerData(teamId);
+  const lineup = determineLineup(players, teamId);
   res.send(lineup);
 });
 

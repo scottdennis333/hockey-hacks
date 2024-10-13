@@ -14,8 +14,8 @@ type Goalie struct {
 }
 
 type Goalies struct {
-	COL Goalie `json:"col"`
-	DET Goalie `json:"det"`
+	DAL Goalie `json:"col"`
+	STL Goalie `json:"det"`
 }
 
 type Game struct {
@@ -32,18 +32,18 @@ func DetermineStaringGoalies(games []Game) Goalies {
 	for _, n := range games {
 		switch n.HomeTeam {
 		case "COL":
-			startingGoalies.COL = n.HomeGoaltender
+			startingGoalies.DAL = n.HomeGoaltender
 			break
 		case "DET":
-			startingGoalies.DET = n.HomeGoaltender
+			startingGoalies.STL = n.HomeGoaltender
 			break
 		}
 		switch n.AwayTeam {
 		case "COL":
-			startingGoalies.COL = n.AwayGoaltender
+			startingGoalies.DAL = n.AwayGoaltender
 			break
 		case "DET":
-			startingGoalies.DET = n.AwayGoaltender
+			startingGoalies.STL = n.AwayGoaltender
 			break
 		}
 	}

@@ -10,7 +10,7 @@ import DraftResults from './DraftResults';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 
-const leagueIds = { 2022: '419.l.6795', 2023: '427.l.4331' };
+const leagueIds = { 2022: '419.l.6795', 2023: '427.l.4331', 2024: '453.l.4965'};
 
 function App() {
   const [players, setPlayers] = useState([]);
@@ -19,8 +19,8 @@ function App() {
   const [loadingPlayers, setLoadingPlayers] = useState(false);
   const [loadingDraftResults, setLoadingDraftResults] = useState(true);
   const [loadingTeams, setLoadingTeams] = useState(true);
-  const [selectedLeagueId, setSelectedLeagueId] = useState(leagueIds[2023]);
-  const [selectedTeam, setSelectedTeam] = useState(`.t.14`);
+  const [selectedLeagueId, setSelectedLeagueId] = useState(leagueIds[2024]);
+  const [selectedTeam, setSelectedTeam] = useState(`.t.12`);
 
 
   useEffect(() => {
@@ -32,7 +32,7 @@ function App() {
   const fetchTeams = () => {
     const cachedData = localStorage.getItem(`teams_${selectedLeagueId}`);
 
-    if (cachedData) {
+    if (false) {
       console.log('Data retrieved from localStorage');
       const parsedData = JSON.parse(cachedData);
       setTeams(parsedData);
@@ -63,7 +63,7 @@ function App() {
 
     const cachedData = localStorage.getItem(`playerData_${selectedLeagueId}${selectedTeam}`);
 
-    if (cachedData) {
+    if (false) {
       console.log('Player data retrieved from localStorage');
       const parsedData = JSON.parse(cachedData);
       setPlayers(parsedData);
@@ -82,6 +82,7 @@ function App() {
       })
       .catch(error => {
         console.error('Error fetching player data:', error);
+        setPlayers([]);
         setLoadingPlayers(false);
       });
   };
@@ -91,8 +92,8 @@ function App() {
   const fetchDraftResults = () => {
     const cachedData = localStorage.getItem(`draftResults_${selectedLeagueId}${selectedTeam}`);
 
-    if (cachedData) {
-      console.log('Data retrieved from localStorage');
+    if (false) {
+      console.log('Draft results retrieved from localStorage');
       const parsedData = JSON.parse(cachedData);
       setDraftResults(parsedData);
       setLoadingDraftResults(false);
@@ -115,6 +116,7 @@ function App() {
   const handleTeamChange = event => {
     const position = event.target.value.indexOf('.t');
     const result = event.target.value.slice(position);
+    console.log('result:', result);
     setSelectedTeam(result);
   };
 

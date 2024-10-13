@@ -3,3 +3,5 @@ mylog.log
 .idea/
 main
 logs.log
+**/node_modules/
+**/.data.*

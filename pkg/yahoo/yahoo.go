@@ -80,20 +80,20 @@ type FantasyContent struct {
 }
 
 type Team struct {
-	TeamKey         string    `xml:"team_key"`
-	TeamID          int       `xml:"team_id"`
-	Name            string    `xml:"name"`
-	IsOwnedByLogin  int       `xml:"is_owned_by_current_login"`
-	URL             string    `xml:"url"`
-	TeamLogos       TeamLogos `xml:"team_logos"`
-	WaiverPriority  int       `xml:"waiver_priority"`
-	NumberOfMoves   int       `xml:"number_of_moves"`
-	NumberOfTrades  int       `xml:"number_of_trades"`
-	RosterAdds      RosterAdds `xml:"roster_adds"`
-	LeagueScoring   string    `xml:"league_scoring_type"`
-	HasDraftGrade   int       `xml:"has_draft_grade"`
-	Managers        Managers  `xml:"managers"`
-	Roster          Roster    `xml:"roster"`
+	TeamKey        string     `xml:"team_key"`
+	TeamID         int        `xml:"team_id"`
+	Name           string     `xml:"name"`
+	IsOwnedByLogin int        `xml:"is_owned_by_current_login"`
+	URL            string     `xml:"url"`
+	TeamLogos      TeamLogos  `xml:"team_logos"`
+	WaiverPriority int        `xml:"waiver_priority"`
+	NumberOfMoves  int        `xml:"number_of_moves"`
+	NumberOfTrades int        `xml:"number_of_trades"`
+	RosterAdds     RosterAdds `xml:"roster_adds"`
+	LeagueScoring  string     `xml:"league_scoring_type"`
+	HasDraftGrade  int        `xml:"has_draft_grade"`
+	Managers       Managers   `xml:"managers"`
+	Roster         Roster     `xml:"roster"`
 }
 
 type TeamLogos struct {
@@ -106,9 +106,9 @@ type TeamLogo struct {
 }
 
 type RosterAdds struct {
-	CoverageType   string `xml:"coverage_type"`
-	CoverageValue  int    `xml:"coverage_value"`
-	Value          int    `xml:"value"`
+	CoverageType  string `xml:"coverage_type"`
+	CoverageValue int    `xml:"coverage_value"`
+	Value         int    `xml:"value"`
 }
 
 type Managers struct {
@@ -116,21 +116,21 @@ type Managers struct {
 }
 
 type Manager struct {
-	ManagerID     int    `xml:"manager_id"`
-	Nickname      string `xml:"nickname"`
-	GUID          string `xml:"guid"`
+	ManagerID      int    `xml:"manager_id"`
+	Nickname       string `xml:"nickname"`
+	GUID           string `xml:"guid"`
 	IsCurrentLogin int    `xml:"is_current_login"`
-	Email         string `xml:"email"`
-	ImageURL      string `xml:"image_url"`
-	FeloScore     int    `xml:"felo_score"`
-	FeloTier      string `xml:"felo_tier"`
+	Email          string `xml:"email"`
+	ImageURL       string `xml:"image_url"`
+	FeloScore      int    `xml:"felo_score"`
+	FeloTier       string `xml:"felo_tier"`
 }
 
 type Roster struct {
-	CoverageType string    `xml:"coverage_type"`
-	Date         string    `xml:"date"`
-	IsEditable   int       `xml:"is_editable"`
-	Players      Players   `xml:"players"`
+	CoverageType string  `xml:"coverage_type"`
+	Date         string  `xml:"date"`
+	IsEditable   int     `xml:"is_editable"`
+	Players      Players `xml:"players"`
 }
 
 type Players struct {
@@ -138,30 +138,30 @@ type Players struct {
 }
 
 type Player struct {
-	PlayerKey          string              `xml:"player_key"`
-	PlayerID           int                 `xml:"player_id"`
-	Name               Name                `xml:"name"`
-	URL                string              `xml:"url"`
-	EditorialPlayerKey string              `xml:"editorial_player_key"`
-	IsKeeper           IsKeeper            `xml:"is_keeper"`
-	UniformNumber      int                 `xml:"uniform_number"`
-	DisplayPosition    string              `xml:"display_position"`
-	Headshot           Headshot            `xml:"headshot"`
-	ImageURL           string              `xml:"image_url"`
-	IsUndroppable      int                 `xml:"is_undroppable"`
-	PositionType       string              `xml:"position_type"`
-	PrimaryPosition    string              `xml:"primary_position"`
-	EligiblePositions  EligiblePositions   `xml:"eligible_positions"`
-	SelectedPosition   SelectedPosition    `xml:"selected_position"`
-	IsEditable         int                 `xml:"is_editable"`
+	PlayerKey          string            `xml:"player_key"`
+	PlayerID           int               `xml:"player_id"`
+	Name               Name              `xml:"name"`
+	URL                string            `xml:"url"`
+	EditorialPlayerKey string            `xml:"editorial_player_key"`
+	IsKeeper           IsKeeper          `xml:"is_keeper"`
+	UniformNumber      int               `xml:"uniform_number"`
+	DisplayPosition    string            `xml:"display_position"`
+	Headshot           Headshot          `xml:"headshot"`
+	ImageURL           string            `xml:"image_url"`
+	IsUndroppable      int               `xml:"is_undroppable"`
+	PositionType       string            `xml:"position_type"`
+	PrimaryPosition    string            `xml:"primary_position"`
+	EligiblePositions  EligiblePositions `xml:"eligible_positions"`
+	SelectedPosition   SelectedPosition  `xml:"selected_position"`
+	IsEditable         int               `xml:"is_editable"`
 }
 
 type Name struct {
-	Full        string `xml:"full"`
-	First       string `xml:"first"`
-	Last        string `xml:"last"`
-	AsciiFirst  string `xml:"ascii_first"`
-	AsciiLast   string `xml:"ascii_last"`
+	Full       string `xml:"full"`
+	First      string `xml:"first"`
+	Last       string `xml:"last"`
+	AsciiFirst string `xml:"ascii_first"`
+	AsciiLast  string `xml:"ascii_last"`
 }
 
 type IsKeeper struct {
@@ -185,7 +185,6 @@ type SelectedPosition struct {
 	Position     string `xml:"position"`
 	IsFlex       int    `xml:"is_flex"`
 }
-
 
 func NewYahooClient() *YahooClient {
 	return &YahooClient{}
@@ -228,7 +227,7 @@ func (yc *YahooClient) RefreshAuth(wg *sync.WaitGroup) {
 	}
 }
 
-func (yc *YahooClient) GetRosterPlayers() ([]Player, error){
+func (yc *YahooClient) GetRosterPlayers() ([]Player, error) {
 	url := "https://fantasysports.yahooapis.com/fantasy/v2/team/" + os.Getenv("YAHOO_LEAGUE_ID") + ".t." + os.Getenv("YAHOO_TEAM_ID") + "/roster/players"
 	respBody, err := yc.sendXMLRequest(http.MethodGet, url, nil)
 
@@ -252,47 +251,36 @@ func (yc *YahooClient) SwapPlayers(teamGoalies goalies.Goalies) {
 	requestBody.Roster.CoverageType = "date"
 	requestBody.Roster.Date = time.Now().Format("2006-01-02")
 
-	// starting and backups
-	ag := AddPlayer{PlayerKey: "427.p.7736"}
-	pf := AddPlayer{PlayerKey: "427.p.7874"}
-	vh := AddPlayer{PlayerKey: "427.p.6462"}
-	jr := AddPlayer{PlayerKey: "427.p.4369"}
+	// Dallas Goalies
+	oettingier := AddPlayer{PlayerKey: "nhl.p.7541"}
+	desmith := AddPlayer{PlayerKey: "nhl.p.7429"}
 
-	// third string
-	ip := AddPlayer{PlayerKey: "427.p.8011"}
-	ja := AddPlayer{PlayerKey: "427.p.7962"}
-	al := AddPlayer{PlayerKey: "427.p.7089"}
+	// St. Louis Goalies
+	binnington := AddPlayer{PlayerKey: "nhl.p.5454"}
+	hofer := AddPlayer{PlayerKey: "nhl.p.8004"}
 
-	if teamGoalies.COL == (goalies.Goalie{}) && teamGoalies.DET == (goalies.Goalie{}) {
+	if teamGoalies.DAL == (goalies.Goalie{}) && teamGoalies.STL == (goalies.Goalie{}) {
 		return
 	}
-	if teamGoalies.DET == (goalies.Goalie{}) {
-		ag.Position, pf.Position, ip.Position, ja.Position = "G", "G", "G", "G"
-		vh.Position, jr.Position, al.Position = "BN", "BN", "BN"
-	} else if teamGoalies.COL == (goalies.Goalie{}) {
-		ag.Position, pf.Position, ip.Position, ja.Position = "BN", "BN", "BN", "BN"
-		vh.Position, jr.Position, al.Position = "G", "G", "G"
+	if teamGoalies.DAL == (goalies.Goalie{}) {
+		binnington.Position, hofer.Position = "G", "G"
+		oettingier.Position, desmith.Position = "BN", "BN"
+	} else if teamGoalies.STL == (goalies.Goalie{}) {
+		binnington.Position, hofer.Position = "BN", "BN"
+		oettingier.Position, desmith.Position = "G", "G"
 	} else {
-		if teamGoalies.COL.LastName == "Georgiev" {
-			ag.Position, ip.Position, pf.Position, ja.Position = "G", "BN", "BN", "BN"
-		} else if teamGoalies.COL.LastName == "Prosvetov" {
-			ag.Position, ip.Position, pf.Position, ja.Position = "BN", "G", "BN", "BN"
-		} else if teamGoalies.COL.LastName == "Francouz" {
-			ag.Position, ip.Position, pf.Position, ja.Position = "BN", "BN", "G", "BN"
-		} else {
-			ag.Position, ip.Position, pf.Position, ja.Position = "BN", "BN", "BN", "G"
+		if teamGoalies.DAL.LastName == "Oettingier" {
+			oettingier.Position, desmith.Position = "G", "BN"
+		} else if teamGoalies.DAL.LastName == "Desmith" {
+			oettingier.Position, desmith.Position = "BN", "G"
 		}
-		if teamGoalies.DET.LastName == "Husso" {
-			vh.Position, jr.Position, al.Position = "G", "BN", "BN"
-		} else if teamGoalies.DET.LastName == "Reimer" {
-			yc.addDrop(jr.PlayerKey, al.PlayerKey)
-			vh.Position, jr.Position, al.Position = "BN", "G", "BN"
-		} else {
-			yc.addDrop(al.PlayerKey, jr.PlayerKey)
-			vh.Position, jr.Position, al.Position = "BN", "BN", "G"
+		if teamGoalies.STL.LastName == "Binnington" {
+			binnington.Position, hofer.Position = "BN", "G"
+		} else if teamGoalies.STL.LastName == "Hofer" {
+			binnington.Position, hofer.Position = "G", "BN"
 		}
 	}
-	requestBody.Roster.Players.Player = []AddPlayer{ag, ja, vh, jr}
+	requestBody.Roster.Players.Player = []AddPlayer{binnington, hofer, oettingier, desmith}
 
 	yahooURL := "https://fantasysports.yahooapis.com/fantasy/v2/team/" + os.Getenv("YAHOO_LEAGUE_ID") + ".t." + os.Getenv("YAHOO_TEAM_ID") + "/roster"
 

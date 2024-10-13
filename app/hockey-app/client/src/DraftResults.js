@@ -6,9 +6,9 @@ function DraftResults(props) {
 
   const { draftResults } = props;
 
-  const halfIndex = Math.ceil(draftResults.length / 2);
-  const firstHalf = draftResults.slice(0, halfIndex);
-  const secondHalf = draftResults.slice(halfIndex);
+  const halfIndex = Math.ceil(draftResults?.length / 2);
+  const firstHalf = draftResults?.slice(0, halfIndex);
+  const secondHalf = draftResults?.slice(halfIndex);
 
   return (
     <Container maxWidth="sm">

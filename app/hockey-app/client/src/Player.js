@@ -21,7 +21,7 @@ function Player(props) {
   const pos = props?.player?.positions.filter(e => e !== 'UTIL');
 
   return (
-    <ThemeProvider theme={lightTheme}>
+    <ThemeProvider theme={darkTheme}>
       <Box
         sx={{
           p: 2,

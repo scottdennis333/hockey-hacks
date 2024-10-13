@@ -11,7 +11,7 @@ function Defensemen(props) {
       <h2 className="position" style={{ textAlign: "center" }}>Defensemen</h2>
       {defensemen.map((player, index) => {
         return (
-          <Player player={player} index={index} />
+          <Player key={`d-${index}`} player={player} index={index} />
         )
       })}
     </Grid>
