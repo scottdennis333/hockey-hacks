@@ -275,9 +275,9 @@ func (yc *YahooClient) SwapPlayers(teamGoalies goalies.Goalies) {
 			Ooettinger.Position, desmith.Position = "BN", "G"
 		}
 		if teamGoalies.STL.LastName == "Binnington" {
-			binnington.Position, hofer.Position = "BN", "G"
-		} else if teamGoalies.STL.LastName == "Hofer" {
 			binnington.Position, hofer.Position = "G", "BN"
+		} else if teamGoalies.STL.LastName == "Hofer" {
+			binnington.Position, hofer.Position = "BN", "G"
 		}
 	}
 	requestBody.Roster.Players.Player = []AddPlayer{binnington, hofer, Ooettinger, desmith}
