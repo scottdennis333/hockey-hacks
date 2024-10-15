@@ -31,18 +31,18 @@ func DetermineStaringGoalies(games []Game) Goalies {
 	var startingGoalies Goalies
 	for _, n := range games {
 		switch n.HomeTeam {
-		case "COL":
+		case "DAL":
 			startingGoalies.DAL = n.HomeGoaltender
 			break
-		case "DET":
+		case "STL":
 			startingGoalies.STL = n.HomeGoaltender
 			break
 		}
 		switch n.AwayTeam {
-		case "COL":
+		case "DAL":
 			startingGoalies.DAL = n.AwayGoaltender
 			break
-		case "DET":
+		case "STL":
 			startingGoalies.STL = n.AwayGoaltender
 			break
 		}

@@ -252,12 +252,12 @@ func (yc *YahooClient) SwapPlayers(teamGoalies goalies.Goalies) {
 	requestBody.Roster.Date = time.Now().Format("2006-01-02")
 
 	// Dallas Goalies
-	oettingier := AddPlayer{PlayerKey: "nhl.p.7541"}
-	desmith := AddPlayer{PlayerKey: "nhl.p.7429"}
+	oettingier := AddPlayer{PlayerKey: "453.p.7541"}
+	desmith := AddPlayer{PlayerKey: "453.p.7429"}
 
 	// St. Louis Goalies
-	binnington := AddPlayer{PlayerKey: "nhl.p.5454"}
-	hofer := AddPlayer{PlayerKey: "nhl.p.8004"}
+	binnington := AddPlayer{PlayerKey: "453.p.5454"}
+	hofer := AddPlayer{PlayerKey: "453.p.8004"}
 
 	if teamGoalies.DAL == (goalies.Goalie{}) && teamGoalies.STL == (goalies.Goalie{}) {
 		return
@@ -325,6 +325,7 @@ func (yc *YahooClient) sendXMLRequest(method string, url string, requestBody int
 		"Authorization": {"Bearer " + yc.Auth.AccessToken},
 		"Content-Type":  {"application/xml"},
 	}
+	log.Println(requestBody)
 	resp, err := client.Do(req)
 	if err != nil {
 		return nil, err
@@ -336,7 +337,7 @@ func (yc *YahooClient) sendXMLRequest(method string, url string, requestBody int
 		return nil, err
 	}
 
-	// log.Println(string(body))
+	log.Println(string(body))
 
 	return body, nil
 }
