@@ -252,7 +252,7 @@ func (yc *YahooClient) SwapPlayers(teamGoalies goalies.Goalies) {
 	requestBody.Roster.Date = time.Now().Format("2006-01-02")
 
 	// Dallas Goalies
-	oettingier := AddPlayer{PlayerKey: "453.p.7541"}
+	Ooettinger := AddPlayer{PlayerKey: "453.p.7541"}
 	desmith := AddPlayer{PlayerKey: "453.p.7429"}
 
 	// St. Louis Goalies
@@ -264,15 +264,15 @@ func (yc *YahooClient) SwapPlayers(teamGoalies goalies.Goalies) {
 	}
 	if teamGoalies.DAL == (goalies.Goalie{}) {
 		binnington.Position, hofer.Position = "G", "G"
-		oettingier.Position, desmith.Position = "BN", "BN"
+		Ooettinger.Position, desmith.Position = "BN", "BN"
 	} else if teamGoalies.STL == (goalies.Goalie{}) {
 		binnington.Position, hofer.Position = "BN", "BN"
-		oettingier.Position, desmith.Position = "G", "G"
+		Ooettinger.Position, desmith.Position = "G", "G"
 	} else {
-		if teamGoalies.DAL.LastName == "Oettingier" {
-			oettingier.Position, desmith.Position = "G", "BN"
+		if teamGoalies.DAL.LastName == "Oettinger" {
+			Ooettinger.Position, desmith.Position = "G", "BN"
 		} else if teamGoalies.DAL.LastName == "Desmith" {
-			oettingier.Position, desmith.Position = "BN", "G"
+			Ooettinger.Position, desmith.Position = "BN", "G"
 		}
 		if teamGoalies.STL.LastName == "Binnington" {
 			binnington.Position, hofer.Position = "BN", "G"
@@ -280,7 +280,7 @@ func (yc *YahooClient) SwapPlayers(teamGoalies goalies.Goalies) {
 			binnington.Position, hofer.Position = "G", "BN"
 		}
 	}
-	requestBody.Roster.Players.Player = []AddPlayer{binnington, hofer, oettingier, desmith}
+	requestBody.Roster.Players.Player = []AddPlayer{binnington, hofer, Ooettinger, desmith}
 
 	yahooURL := "https://fantasysports.yahooapis.com/fantasy/v2/team/" + os.Getenv("YAHOO_LEAGUE_ID") + ".t." + os.Getenv("YAHOO_TEAM_ID") + "/roster"
 
