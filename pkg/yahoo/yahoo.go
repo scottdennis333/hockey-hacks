@@ -222,7 +222,7 @@ func (yc *YahooClient) RefreshAuth(wg *sync.WaitGroup) {
 		json.Unmarshal([]byte(body), &yc.Auth)
 	} else {
 		email.SendEmail(body)
-		log.Fatalln("Yahoo Auth Failed")
+		log.Fatalf("Yahoo Auth Failed: %s", string(body))
 		os.Exit(1)
 	}
 }
