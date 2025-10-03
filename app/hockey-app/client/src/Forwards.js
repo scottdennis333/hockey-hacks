@@ -3,11 +3,12 @@ import Player from './Player';
 
 function Forwards(props) {
 
-  const { centers } = props;
-  const { leftwings } = props;
-  const { rightwings } = props;
+  const { centers = [] } = props;
+  const { leftwings = [] } = props;
+  const { rightwings = [] } = props;
 
-  console.log(centers);
+  console.log('Forwards data:', { centers, leftwings, rightwings });
+
   return (
     <Grid container spacing={2}>
       <Grid xs={4} direction={'column'} container spacing={1}>

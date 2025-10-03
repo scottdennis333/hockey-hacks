@@ -4,7 +4,7 @@ import Player from './Player';
 
 
 function Goalies(props) {
-  const { goalies } = props;
+  const { goalies = [] } = props;
 
   return (
     <Grid xs={4} direction={'column'} container spacing={1}>

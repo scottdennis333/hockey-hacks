@@ -5,7 +5,9 @@
         "godotenv",
         "hofer",
         "Ooettinger",
-        "powerplay"
+        "powerplay",
+        "stolarz",
+        "woll"
     ],
     "GitHooks.hooksDirectory": "/Users/admin/workspace/hockey-hacks/.git/hooks"
 }

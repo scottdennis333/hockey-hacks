@@ -4,7 +4,7 @@ import Player from './Player';
 
 function Defensemen(props) {
 
-  const { defensemen } = props;
+  const { defensemen = [] } = props;
 
   return (
     <Grid xs={4} direction={'column'} container spacing={1}>

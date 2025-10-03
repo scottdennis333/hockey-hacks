@@ -1,3 +1,51 @@
 div#root {
     margin: 1rem;
+    background-color: #121212;
+    min-height: 100vh;
+    color: #ffffff;
+}
+
+/* Dark mode theme colors */
+.MuiPaper-root {
+    background-color: #1e1e1e !important;
+    color: #ffffff !important;
+}
+
+.MuiSelect-root {
+    color: #ffffff !important;
+}
+
+.MuiOutlinedInput-root {
+    color: #ffffff !important;
+}
+
+.MuiOutlinedInput-notchedOutline {
+    border-color: #555555 !important;
+}
+
+.MuiInputLabel-root {
+    color: #bbbbbb !important;
+}
+
+.MuiMenuItem-root {
+    background-color: #1e1e1e !important;
+    color: #ffffff !important;
+}
+
+.MuiMenuItem-root:hover {
+    background-color: #333333 !important;
+}
+
+/* Fix dropdown arrow color */
+.MuiSelect-icon {
+    color: #ffffff !important;
+}
+
+/* Fix draft results text colors */
+.MuiListItemText-primary {
+    color: #ffffff !important;
+}
+
+.MuiListItem-root {
+    border-bottom: 1px solid #555555 !important;
 }

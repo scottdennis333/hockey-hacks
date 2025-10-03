@@ -251,36 +251,40 @@ func (yc *YahooClient) SwapPlayers(teamGoalies goalies.Goalies) {
 	requestBody.Roster.CoverageType = "date"
 	requestBody.Roster.Date = time.Now().Format("2006-01-02")
 
-	// Dallas Goalies
-	Ooettinger := AddPlayer{PlayerKey: "453.p.7541"}
-	desmith := AddPlayer{PlayerKey: "453.p.7429"}
+	// Team 1 Goalies
+	team1G1 := AddPlayer{PlayerKey: os.Getenv("TEAM1_G1")}
+	team1G2 := AddPlayer{PlayerKey: os.Getenv("TEAM1_G2")}
+	// Team 2 Goalies
+	team2G1 := AddPlayer{PlayerKey: os.Getenv("TEAM2_G1")}
+	team2G2 := AddPlayer{PlayerKey: os.Getenv("TEAM2_G2")}
 
-	// St. Louis Goalies
-	binnington := AddPlayer{PlayerKey: "453.p.5454"}
-	hofer := AddPlayer{PlayerKey: "453.p.8004"}
+	team1G1Last := os.Getenv("TEAM1_G1_LASTNAME")
+	team1G2Last := os.Getenv("TEAM1_G2_LASTNAME")
+	team2G1Last := os.Getenv("TEAM2_G1_LASTNAME")
+	team2G2Last := os.Getenv("TEAM2_G2_LASTNAME")
 
-	if teamGoalies.DAL == (goalies.Goalie{}) && teamGoalies.STL == (goalies.Goalie{}) {
+	if teamGoalies.T1 == (goalies.Goalie{}) && teamGoalies.T2 == (goalies.Goalie{}) {
 		return
 	}
-	if teamGoalies.DAL == (goalies.Goalie{}) {
-		binnington.Position, hofer.Position = "G", "G"
-		Ooettinger.Position, desmith.Position = "BN", "BN"
-	} else if teamGoalies.STL == (goalies.Goalie{}) {
-		binnington.Position, hofer.Position = "BN", "BN"
-		Ooettinger.Position, desmith.Position = "G", "G"
+	if teamGoalies.T1 == (goalies.Goalie{}) {
+		team1G1.Position, team1G2.Position = "G", "G"
+		team2G1.Position, team2G2.Position = "BN", "BN"
+	} else if teamGoalies.T2 == (goalies.Goalie{}) {
+		team1G1.Position, team1G2.Position = "BN", "BN"
+		team2G1.Position, team2G2.Position = "G", "G"
 	} else {
-		if teamGoalies.DAL.LastName == "Oettinger" {
-			Ooettinger.Position, desmith.Position = "G", "BN"
-		} else if teamGoalies.DAL.LastName == "Desmith" {
-			Ooettinger.Position, desmith.Position = "BN", "G"
+		if teamGoalies.T1.LastName == team1G1Last {
+			team1G1.Position, team1G2.Position = "G", "BN"
+		} else if teamGoalies.T1.LastName == team1G2Last {
+			team1G1.Position, team1G2.Position = "BN", "G"
 		}
-		if teamGoalies.STL.LastName == "Binnington" {
-			binnington.Position, hofer.Position = "G", "BN"
-		} else if teamGoalies.STL.LastName == "Hofer" {
-			binnington.Position, hofer.Position = "BN", "G"
+		if teamGoalies.T2.LastName == team2G1Last {
+			team2G1.Position, team2G2.Position = "G", "BN"
+		} else if teamGoalies.T2.LastName == team2G2Last {
+			team2G1.Position, team2G2.Position = "BN", "G"
 		}
 	}
-	requestBody.Roster.Players.Player = []AddPlayer{binnington, hofer, Ooettinger, desmith}
+	requestBody.Roster.Players.Player = []AddPlayer{team2G1, team2G2, team1G1, team1G2}
 
 	yahooURL := "https://fantasysports.yahooapis.com/fantasy/v2/team/" + os.Getenv("YAHOO_LEAGUE_ID") + ".t." + os.Getenv("YAHOO_TEAM_ID") + "/roster"
 

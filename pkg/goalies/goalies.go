@@ -2,6 +2,7 @@ package goalies
 
 import (
 	"log"
+	"os"
 )
 
 type Goalie struct {
@@ -14,8 +15,8 @@ type Goalie struct {
 }
 
 type Goalies struct {
-	DAL Goalie `json:"col"`
-	STL Goalie `json:"det"`
+	T1 Goalie `json:"col"`
+	T2 Goalie `json:"det"`
 }
 
 type Game struct {
@@ -29,22 +30,20 @@ type Game struct {
 
 func DetermineStaringGoalies(games []Game) Goalies {
 	var startingGoalies Goalies
+	team1 := os.Getenv("TEAM1_ABBR")
+	team2 := os.Getenv("TEAM2_ABBR")
 	for _, n := range games {
 		switch n.HomeTeam {
-		case "DAL":
-			startingGoalies.DAL = n.HomeGoaltender
-			break
-		case "STL":
-			startingGoalies.STL = n.HomeGoaltender
-			break
+		case team1:
+			startingGoalies.T1 = n.HomeGoaltender
+		case team2:
+			startingGoalies.T2 = n.HomeGoaltender
 		}
 		switch n.AwayTeam {
-		case "DAL":
-			startingGoalies.DAL = n.AwayGoaltender
-			break
-		case "STL":
-			startingGoalies.STL = n.AwayGoaltender
-			break
+		case team1:
+			startingGoalies.T1 = n.AwayGoaltender
+		case team2:
+			startingGoalies.T2 = n.AwayGoaltender
 		}
 	}
 	log.Println(startingGoalies)

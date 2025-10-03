@@ -4,7 +4,7 @@ import Player from './Player';
 
 function Bench(props) {
 
-  const { bench } = props;
+  const { bench = [] } = props;
 
   return (
     <Grid xs={4} direction={'column'} container spacing={1}>

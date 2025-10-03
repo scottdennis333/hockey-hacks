@@ -4,7 +4,7 @@ import Player from './Player';
 
 function Util(props) {
 
-  const { util } = props;
+  const { util = [] } = props;
 
   return (
     <Grid xs={4} direction={'column'} container spacing={1}>

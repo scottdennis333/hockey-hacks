@@ -6,34 +6,41 @@ function DraftResults(props) {
 
   const { draftResults } = props;
 
-  const halfIndex = Math.ceil(draftResults?.length / 2);
-  const firstHalf = draftResults?.slice(0, halfIndex);
-  const secondHalf = draftResults?.slice(halfIndex);
+  // Ensure draftResults is an array before using array methods
+  const draftArray = Array.isArray(draftResults) ? draftResults : [];
+
+  const halfIndex = Math.ceil(draftArray.length / 2);
+  const firstHalf = draftArray.slice(0, halfIndex);
+  const secondHalf = draftArray.slice(halfIndex);
 
   return (
     <Container maxWidth="sm">
       <h2 className="position" >Draft Results</h2>
-      <List>
-        <Grid container spacing={2}>
-          <Grid item xs={6}>
-            {firstHalf.map((item, index) => (
-              <ListItem key={index} sx={{ borderBottom: '1px solid #ccc', padding: '12px 0' }}>
-                <ListItemText primary={`${item.round}. ${item?.player || ''}`}
-                  sx={{ color: '#333', fontWeight: 'bold' }} />
-              </ListItem>
-            ))}
-          </Grid>
-          <Grid item xs={6}>
-            <List style={{ paddingTop: '0px' }}>
-              {secondHalf.map((item, index) => (
-                <ListItem key={index} sx={{ borderBottom: '1px solid #ccc', padding: '12px 0' }}>
-                  <ListItemText primary={`${item.round}. ${item?.player || ''}`} />
+      {draftArray.length === 0 ? (
+        <p>No draft results available or there was an error loading the data.</p>
+      ) : (
+        <List>
+          <Grid container spacing={2}>
+            <Grid item xs={6}>
+              {firstHalf.map((item, index) => (
+                <ListItem key={index} sx={{ borderBottom: '1px solid #555555', padding: '12px 0' }}>
+                  <ListItemText primary={`${item.round}. ${item?.player || ''}`}
+                    sx={{ color: '#ffffff', fontWeight: 'bold' }} />
                 </ListItem>
               ))}
-            </List>
+            </Grid>
+            <Grid item xs={6}>
+              <List style={{ paddingTop: '0px' }}>
+                {secondHalf.map((item, index) => (
+                  <ListItem key={index} sx={{ borderBottom: '1px solid #555555', padding: '12px 0' }}>
+                    <ListItemText primary={`${item.round}. ${item?.player || ''}`} sx={{ color: '#ffffff' }} />
+                  </ListItem>
+                ))}
+              </List>
+            </Grid>
           </Grid>
-        </Grid>
-      </List>
+        </List>
+      )}
     </Container>
   );
 
