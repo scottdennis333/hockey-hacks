@@ -1,0 +1,51 @@
+name: Starting Goalies Scheduler
+
+on:
+  schedule:
+    # Run every day at 8 AM EST (12 PM UTC)
+    - cron: '0 12 * * *'
+    # Run every day at 6 PM EST (10 PM UTC) 
+    - cron: '0 22 * * *'
+  
+  # Allow manual trigger
+  workflow_dispatch:
+
+env:
+  YAHOO_CLIENT_ID: ${{ secrets.YAHOO_CLIENT_ID }}
+  YAHOO_CLIENT_SECRET: ${{ secrets.YAHOO_CLIENT_SECRET }}
+  YAHOO_REFRESH_TOKEN: ${{ secrets.YAHOO_REFRESH_TOKEN }}
+
+jobs:
+  run-starting-goalies:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.21'
+        
+    - name: Create .env file
+      run: |
+        echo "YAHOO_CLIENT_ID=${{ secrets.YAHOO_CLIENT_ID }}" >> .env
+        echo "YAHOO_CLIENT_SECRET=${{ secrets.YAHOO_CLIENT_SECRET }}" >> .env
+        echo "YAHOO_REFRESH_TOKEN=${{ secrets.YAHOO_REFRESH_TOKEN }}" >> .env
+        
+    - name: Download dependencies
+      run: go mod download
+      
+    - name: Run starting goalies program
+      run: |
+        cd cmd/startingGoalies
+        go run main.go
+        
+    - name: Upload logs (optional)
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: goalies-logs
+        path: cmd/startingGoalies/logs.log
+        retention-days: 7
