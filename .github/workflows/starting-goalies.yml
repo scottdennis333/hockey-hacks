@@ -1,46 +1,44 @@
 name: Starting Goalies Scheduler
 
 on:
-    schedule:
-        # Run 5 minutes before each hour from 10 AM to 10 PM Central Time (CDT = UTC-5)
-        # 10 AM CDT = 3 PM UTC, 10 PM CDT = 3 AM UTC (next day)
-        - cron: "55 15,16,17,18,19,20,21,22,23,0,1,2,3 * * *"
-
-    # Allow manual trigger
-    workflow_dispatch:
+  schedule:
+    # Run 5 minutes before each hour from 10 AM to 10 PM Central Time (CDT = UTC-5)
+    # 10 AM CDT = 3 PM UTC, 10 PM CDT = 3 AM UTC (next day)
+    - cron: "55 15,16,17,18,19,20,21,22,23,0,1,2,3 * * *"
+  # Allow manual trigger
+  workflow_dispatch:
 
 env:
-    SECRETS: ${{ secrets.SECRETS }}
+  SECRETS: ${{ secrets.SECRETS }}
 
 jobs:
-    run-starting-goalies:
-        runs-on: ubuntu-latest
+  run-starting-goalies:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-        steps:
-            - name: Checkout code
-              uses: actions/checkout@v4
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: "1.21"
 
-            - name: Set up Go
-              uses: actions/setup-go@v4
-              with:
-                  go-version: "1.21"
+      - name: Create .env file from JSON secret
+        run: |
+          echo '${{ secrets.SECRETS }}' | jq -r 'to_entries[] | "\(.key)=\(.value)"' > .env
 
-            - name: Create .env file from JSON secret
-              run: |
-                  echo '${{ secrets.SECRETS }}' | jq -r 'to_entries[] | "\(.key)=\(.value)"' > .env
+      - name: Download dependencies
+        run: go mod download
 
-            - name: Download dependencies
-              run: go mod download
+      - name: Run starting goalies program
+        run: |
+          cd cmd/startingGoalies
+          go run main.go
 
-            - name: Run starting goalies program
-              run: |
-                  cd cmd/startingGoalies
-                  go run main.go
-
-            - name: Upload logs (optional)
-              uses: actions/upload-artifact@v4
-              if: always()
-              with:
-                  name: goalies-logs
-                  path: cmd/startingGoalies/logs.log
-                  retention-days: 7
+      - name: Upload logs (optional)
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: goalies-logs
+          path: cmd/startingGoalies/logs.log
+          retention-days: 7
