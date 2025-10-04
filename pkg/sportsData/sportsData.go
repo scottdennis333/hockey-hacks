@@ -2,7 +2,6 @@ package sportsData
 
 import (
 	"encoding/json"
-	"fmt"
 	"hockey-hacks/pkg/email"
 	"hockey-hacks/pkg/goalies"
 	"io"
@@ -13,11 +12,15 @@ import (
 	"time"
 )
 
+const (
+	SportsDataAPIBaseURL = "https://api.sportsdata.io/v3/nhl"
+)
+
 func GetStartingGoalies(wg *sync.WaitGroup) (goalies.Goalies, error) {
 	defer wg.Done()
 
 	date := time.Now().Format("2006-01-02")
-	sportsDataUrl := "https://api.sportsdata.io/v3/nhl/projections/json/StartingGoaltendersByDate/" + date
+	sportsDataUrl := SportsDataAPIBaseURL + "/projections/json/StartingGoaltendersByDate/" + date
 
 	respBody, err := sendRequest("GET", sportsDataUrl, nil)
 
@@ -30,57 +33,6 @@ func GetStartingGoalies(wg *sync.WaitGroup) (goalies.Goalies, error) {
 	json.Unmarshal([]byte(respBody), &games)
 
 	return goalies.DetermineStaringGoalies(games), nil
-}
-
-func GetGameProjections() []Player {
-	date := time.Now().Format("2006-01-02")
-	sportsDataUrl := "https://api.sportsdata.io/v3/nhl/projections/json/PlayerGameProjectionStatsByDate/" + date
-
-	respBody, err := sendRequest("GET", sportsDataUrl, nil)
-
-	if err != nil {
-		fmt.Println(respBody)
-		email.SendEmail(respBody)
-		log.Fatalln("Failed to get starting goalies")
-	}
-
-	var players []Player
-	json.Unmarshal([]byte(respBody), &players)
-
-	for _, player := range players {
-		player.FantasyPointsYahoo = calculateFantasyScore(player)
-	}
-
-	return players
-}
-
-func calculateFantasyScore(player Player) float64 {
-	averageGoalsPerGame := 3.18
-	averageGoalsPerTeam := averageGoalsPerGame / 2.0
-	probabilityGameWinningGoal := 1 / averageGoalsPerTeam
-
-	goalsWeight := 25.0 * (1 + probabilityGameWinningGoal)
-	assistsWeight := 25.0
-	plusMinusWeight := 5.0
-	penaltyMinutesWeight := 1.50
-	powerplayPointsWeight := 10.0
-	shorthandedPointsWeight := 20.0
-	shotsOnGoalWeight := 2.0
-	hitsWeight := 1.50
-	blocksWeight := 2.0
-
-	fantasyScore := (player.Goals * goalsWeight) +
-		(player.Assists * assistsWeight) +
-		(player.PlusMinus * plusMinusWeight) +
-		(player.PenaltyMinutes * penaltyMinutesWeight) +
-		((player.PowerPlayGoals + player.PowerPlayAssists) * powerplayPointsWeight) +
-		((player.ShortHandedGoals + player.ShortHandedAssists) * shorthandedPointsWeight) +
-		(player.ShotsOnGoal * shotsOnGoalWeight) +
-		(player.Hits * hitsWeight) +
-		(player.Blocks * blocksWeight)
-
-	log.Println(player.Name, fantasyScore)
-	return fantasyScore
 }
 
 func sendRequest(method string, url string, body io.Reader) ([]byte, error) {
