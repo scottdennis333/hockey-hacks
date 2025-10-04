@@ -13,24 +13,6 @@ import (
 	"time"
 )
 
-
-type Player struct {
-	Name                  string  `json:"Name"`
-	FantasyPointsYahoo    float64 `json:"FantasyPointsYahoo"`
-	ShotsOnGoal           float64 `json:"ShotsOnGoal"`
-	PowerPlayGoals        float64 `json:"PowerPlayGoals"`
-	ShortHandedGoals      float64 `json:"ShortHandedGoals"`
-	PowerPlayAssists      float64 `json:"PowerPlayAssists"`
-	ShortHandedAssists    float64 `json:"ShortHandedAssists"`
-	ShootoutGoals         float64 `json:"ShootoutGoals"`
-	PlusMinus             float64 `json:"PlusMinus"`
-	PenaltyMinutes        float64 `json:"PenaltyMinutes"`
-	Blocks                float64 `json:"Blocks"`
-	Hits                  float64 `json:"Hits"`
-	Goals                 float64 `json:"Goals"`
-	Assists               float64 `json:"Assists"`
-}
-
 func GetStartingGoalies(wg *sync.WaitGroup) (goalies.Goalies, error) {
 	defer wg.Done()
 
@@ -74,8 +56,8 @@ func GetGameProjections() []Player {
 
 func calculateFantasyScore(player Player) float64 {
 	averageGoalsPerGame := 3.18
-    averageGoalsPerTeam := averageGoalsPerGame / 2.0
-    probabilityGameWinningGoal := 1 / averageGoalsPerTeam
+	averageGoalsPerTeam := averageGoalsPerGame / 2.0
+	probabilityGameWinningGoal := 1 / averageGoalsPerTeam
 
 	goalsWeight := 25.0 * (1 + probabilityGameWinningGoal)
 	assistsWeight := 25.0
@@ -97,7 +79,7 @@ func calculateFantasyScore(player Player) float64 {
 		(player.Hits * hitsWeight) +
 		(player.Blocks * blocksWeight)
 
-		log.Println(player.Name, fantasyScore)
+	log.Println(player.Name, fantasyScore)
 	return fantasyScore
 }
 
