@@ -2,8 +2,9 @@ name: Starting Goalies Scheduler
 
 on:
   schedule:
-    # Primary schedule: 5 minutes before each hour (10 AM - 10 PM Central)
     - cron: "55 0-2,15-23 * * *"
+  repository_dispatch:
+    types: [run-goalies]
   workflow_dispatch:
 
 env:
@@ -22,7 +23,7 @@ jobs:
           HOUR=$(date -u +%H)
           MINUTE=$(date -u +%M)
           echo "Current UTC time: $HOUR:$MINUTE"
-          
+
           # Create a simple lock mechanism using the hour
           LOCK_FILE="/tmp/goalies_lock_$HOUR"
           if [ -f "$LOCK_FILE" ]; then
