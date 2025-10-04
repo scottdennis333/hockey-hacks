@@ -40,25 +40,41 @@ jobs:
         run: |
           echo '${{ secrets.SECRETS }}' | jq -r 'to_entries[] | "\(.key)=\(.value)"' > .env
 
-      - name: Download dependencies
-        run: go mod download
-
-      - name: Cache compiled binary
-        uses: actions/cache@v4
+      - name: Try to restore cached binary
+        uses: actions/cache/restore@v4
         id: binary-cache
         with:
           path: cmd/startingGoalies/goalies
-          key: ${{ runner.os }}-binary-${{ hashFiles('**/*.go', 'go.sum', 'go.mod') }}
+          key: goalies-binary-${{ github.sha }}-${{ hashFiles('**/*.go', 'go.sum', 'go.mod') }}
+          restore-keys: |
+            goalies-binary-${{ github.sha }}-
+            goalies-binary-
 
-      - name: Build binary (compile once, run fast)
+      - name: Download pre-built binary (fallback)
+        if: steps.binary-cache.outputs.cache-hit != 'true'
+        uses: actions/download-artifact@v4
+        with:
+          name: starting-goalies-binary
+          path: cmd/startingGoalies/
+        continue-on-error: true
+
+      - name: Build binary (final fallback)
         if: steps.binary-cache.outputs.cache-hit != 'true'
         run: |
           cd cmd/startingGoalies
-          go build -o goalies main.go
+          if [ ! -f goalies ]; then
+            echo "No cached or pre-built binary found, building from source..."
+            go mod download
+            go build -o goalies main.go
+          else
+            echo "Using downloaded pre-built binary"
+            chmod +x goalies
+          fi
 
       - name: Run starting goalies program
         run: |
           cd cmd/startingGoalies
+          chmod +x goalies
           ./goalies
 
       - name: Upload logs (optional)
