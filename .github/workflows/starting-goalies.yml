@@ -2,10 +2,9 @@ name: Starting Goalies Scheduler
 
 on:
     schedule:
-        # Test every 5 minutes to debug scheduling
-        - cron: "*/5 * * * *"
-        # Original schedule (currently not working)
-        # - cron: "55 15,16,17,18,19,20,21,22,23,0,1,2,3 * * *"
+        # Run 5 minutes before each hour from 10 AM to 10 PM Central Time (CDT = UTC-5)
+        # 10 AM CDT = 3 PM UTC, 10 PM CDT = 3 AM UTC (next day)
+        - cron: "55 15,16,17,18,19,20,21,22,23,0,1,2,3 * * *"
 
     # Allow manual trigger
     workflow_dispatch:
