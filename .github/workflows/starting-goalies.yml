@@ -2,7 +2,7 @@ name: Starting Goalies Scheduler
 
 on:
   schedule:
-    - cron: "55 0-2,15-23 * * *"
+    - cron: "45 0-2,15-23 * * *"
   repository_dispatch:
     types: [run-goalies]
   workflow_dispatch:
