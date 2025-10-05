@@ -1,6 +1,7 @@
 package main
 
 import (
+	"hockey-hacks/pkg/goalies"
 	"hockey-hacks/pkg/sportsData"
 	"hockey-hacks/pkg/yahoo"
 	"log"
@@ -28,8 +29,10 @@ func main() {
 	var wg sync.WaitGroup
 	wg.Add(2)
 	go yahoo.RefreshAuth(&wg)
-	startingGoalies, err := sportsData.GetStartingGoalies(&wg)
+	games, err := sportsData.GetStartingGoalies(&wg)
 	wg.Wait()
+
+	startingGoalies := goalies.GetTeamStartingGoalies(games)
 
 	if err != nil {
 		os.Exit(1)

@@ -10,18 +10,18 @@ type YahooAuth struct {
 	TokenType    string `json:"token_type"`
 }
 
-type AddPlayer struct {
+type SwapPlayer struct {
 	PlayerKey string `xml:"player_key"`
 	Position  string `xml:"position"`
 }
 
-type AddPlayers struct {
+type SwapPlayerRequest struct {
 	XMLName xml.Name `xml:"fantasy_content"`
 	Roster  struct {
 		CoverageType string `xml:"coverage_type"`
 		Date         string `xml:"date"`
 		Players      struct {
-			Player []AddPlayer `xml:"player"`
+			Player []SwapPlayer `xml:"player"`
 		} `xml:"players"`
 	} `xml:"roster"`
 }
@@ -35,7 +35,7 @@ type AddDropPlayer struct {
 	} `xml:"transaction_data"`
 }
 
-type AddDropPlayers struct {
+type AddDropPlayerRequest struct {
 	XMLName     xml.Name `xml:"fantasy_content"`
 	Transaction struct {
 		Type    string `xml:"type"`

@@ -7,7 +7,7 @@ import (
 	"encoding/json"
 	"encoding/xml"
 	"hockey-hacks/pkg/email"
-	"hockey-hacks/pkg/goalies"
+	"hockey-hacks/pkg/sportsData"
 	"io"
 	"log"
 	"net/http"
@@ -22,6 +22,15 @@ import (
 
 const (
 	YahooFantasyAPIBaseURL = "https://fantasysports.yahooapis.com/fantasy/v2"
+
+	// Position constants
+	PositionGoalie = "G"
+	PositionBench  = "BN"
+
+	// Transaction constants
+	TransactionAddDrop = "add/drop"
+	TransactionAdd     = "add"
+	TransactionDrop    = "drop"
 )
 
 type YahooClient struct {
@@ -43,7 +52,7 @@ func (yc *YahooClient) RefreshAuth(wg *sync.WaitGroup) {
 	data.Set("refresh_token", os.Getenv("YAHOO_REFRESH_TOKEN"))
 
 	client := http.Client{}
-	req, err := http.NewRequest("POST", endpoints.Yahoo.TokenURL, strings.NewReader(data.Encode()))
+	req, err := http.NewRequest(http.MethodPost, endpoints.Yahoo.TokenURL, strings.NewReader(data.Encode()))
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -88,45 +97,71 @@ func (yc *YahooClient) GetRosterPlayers() ([]Player, error) {
 	return fantasyContent.Team.Roster.Players.PlayerList, nil
 }
 
-func (yc *YahooClient) SwapPlayers(teamGoalies goalies.Goalies) {
-	var requestBody AddPlayers
+func (yc *YahooClient) SwapPlayers(teamGoalies sportsData.Goalies) {
+	var requestBody SwapPlayerRequest
 	requestBody.Roster.CoverageType = "date"
-	requestBody.Roster.Date = time.Now().Format("2006-01-02")
+	requestBody.Roster.Date = time.Now().Format(time.DateOnly)
 
 	// Team 1 Goalies
-	team1G1 := AddPlayer{PlayerKey: os.Getenv("TEAM1_G1")}
-	team1G2 := AddPlayer{PlayerKey: os.Getenv("TEAM1_G2")}
+	team1G1 := SwapPlayer{PlayerKey: os.Getenv("TEAM1_G1")}
+	team1G2 := SwapPlayer{PlayerKey: os.Getenv("TEAM1_G2")}
 	// Team 2 Goalies
-	team2G1 := AddPlayer{PlayerKey: os.Getenv("TEAM2_G1")}
-	team2G2 := AddPlayer{PlayerKey: os.Getenv("TEAM2_G2")}
+	team2G1 := SwapPlayer{PlayerKey: os.Getenv("TEAM2_G1")}
+	team2G2 := SwapPlayer{PlayerKey: os.Getenv("TEAM2_G2")}
 
 	team1G1Last := os.Getenv("TEAM1_G1_LASTNAME")
 	team1G2Last := os.Getenv("TEAM1_G2_LASTNAME")
 	team2G1Last := os.Getenv("TEAM2_G1_LASTNAME")
 	team2G2Last := os.Getenv("TEAM2_G2_LASTNAME")
 
-	if teamGoalies.T1 == (goalies.Goalie{}) && teamGoalies.T2 == (goalies.Goalie{}) {
+	// Check if we have no starting goalies
+	if len(teamGoalies) == 0 {
 		return
 	}
-	if teamGoalies.T1 == (goalies.Goalie{}) {
-		team1G1.Position, team1G2.Position = "G", "G"
-		team2G1.Position, team2G2.Position = "BN", "BN"
-	} else if teamGoalies.T2 == (goalies.Goalie{}) {
-		team1G1.Position, team1G2.Position = "BN", "BN"
-		team2G1.Position, team2G2.Position = "G", "G"
-	} else {
-		if teamGoalies.T1.LastName == team1G1Last {
-			team1G1.Position, team1G2.Position = "G", "BN"
-		} else if teamGoalies.T1.LastName == team1G2Last {
-			team1G1.Position, team1G2.Position = "BN", "G"
+
+	// Handle cases based on number of starting goalies
+	if len(teamGoalies) == 1 {
+		// Only one goalie starting - determine which team they're on
+		goalie := teamGoalies[0]
+		team1Abbr := os.Getenv("TEAM1_ABBR")
+		if goalie.Team == team1Abbr {
+			// Team 1 goalie starting, bench team 2
+			if goalie.LastName == team1G1Last {
+				team1G1.Position, team1G2.Position = PositionGoalie, PositionBench
+			} else if goalie.LastName == team1G2Last {
+				team1G1.Position, team1G2.Position = PositionBench, PositionGoalie
+			}
+			team2G1.Position, team2G2.Position = PositionBench, PositionBench
+		} else {
+			// Team 2 goalie starting, bench team 1
+			if goalie.LastName == team2G1Last {
+				team2G1.Position, team2G2.Position = PositionGoalie, PositionBench
+			} else if goalie.LastName == team2G2Last {
+				team2G1.Position, team2G2.Position = PositionBench, PositionGoalie
+			}
+			team1G1.Position, team1G2.Position = PositionBench, PositionBench
 		}
-		if teamGoalies.T2.LastName == team2G1Last {
-			team2G1.Position, team2G2.Position = "G", "BN"
-		} else if teamGoalies.T2.LastName == team2G2Last {
-			team2G1.Position, team2G2.Position = "BN", "G"
+	} else if len(teamGoalies) >= 2 {
+		// Both teams have starting goalies
+		for _, goalie := range teamGoalies {
+			team1Abbr := os.Getenv("TEAM1_ABBR")
+			if goalie.Team == team1Abbr {
+				if goalie.LastName == team1G1Last {
+					team1G1.Position, team1G2.Position = PositionGoalie, PositionBench
+				} else if goalie.LastName == team1G2Last {
+					team1G1.Position, team1G2.Position = PositionBench, PositionGoalie
+				}
+			} else {
+				if goalie.LastName == team2G1Last {
+					team2G1.Position, team2G2.Position = PositionGoalie, PositionBench
+				} else if goalie.LastName == team2G2Last {
+					team2G1.Position, team2G2.Position = PositionBench, PositionGoalie
+				}
+			}
 		}
 	}
-	requestBody.Roster.Players.Player = []AddPlayer{team2G1, team2G2, team1G1, team1G2}
+
+	requestBody.Roster.Players.Player = []SwapPlayer{team2G1, team2G2, team1G1, team1G2}
 
 	yahooURL := YahooFantasyAPIBaseURL + "/team/" + os.Getenv("YAHOO_LEAGUE_ID") + ".t." + os.Getenv("YAHOO_TEAM_ID") + "/roster"
 
@@ -134,17 +169,17 @@ func (yc *YahooClient) SwapPlayers(teamGoalies goalies.Goalies) {
 }
 
 func (yc *YahooClient) addDrop(add string, drop string) {
-	var requestBody AddDropPlayers
-	requestBody.Transaction.Type = "add/drop"
+	var requestBody AddDropPlayerRequest
+	requestBody.Transaction.Type = TransactionAddDrop
 
 	var addPlayer AddDropPlayer
 	addPlayer.PlayerKey = add
-	addPlayer.TransactionData.Type = "add"
+	addPlayer.TransactionData.Type = TransactionAdd
 	addPlayer.TransactionData.DestinationTeamKey = os.Getenv("YAHOO_LEAGUE_ID") + ".t." + os.Getenv("YAHOO_TEAM_ID")
 
 	var dropPlayer AddDropPlayer
 	dropPlayer.PlayerKey = drop
-	dropPlayer.TransactionData.Type = "drop"
+	dropPlayer.TransactionData.Type = TransactionDrop
 	dropPlayer.TransactionData.SourceTeamKey = os.Getenv("YAHOO_LEAGUE_ID") + ".t." + os.Getenv("YAHOO_TEAM_ID")
 
 	requestBody.Transaction.Players.AddDropPlayer = []AddDropPlayer{addPlayer, dropPlayer}

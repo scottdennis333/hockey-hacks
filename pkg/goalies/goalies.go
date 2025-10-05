@@ -1,26 +1,25 @@
 package goalies
 
 import (
+	"hockey-hacks/pkg/sportsData"
 	"log"
 	"os"
 )
 
-func DetermineStaringGoalies(games []Game) Goalies {
-	var startingGoalies Goalies
+func GetTeamStartingGoalies(games sportsData.Games) sportsData.Goalies {
+	var startingGoalies sportsData.Goalies
 	team1 := os.Getenv("TEAM1_ABBR")
 	team2 := os.Getenv("TEAM2_ABBR")
 	for _, n := range games {
-		switch n.HomeTeam {
-		case team1:
-			startingGoalies.T1 = n.HomeGoaltender
-		case team2:
-			startingGoalies.T2 = n.HomeGoaltender
+		if n.HomeTeam == team1 {
+			startingGoalies = append(startingGoalies, n.HomeGoaltender)
+		} else if n.HomeTeam == team2 {
+			startingGoalies = append(startingGoalies, n.HomeGoaltender)
 		}
-		switch n.AwayTeam {
-		case team1:
-			startingGoalies.T1 = n.AwayGoaltender
-		case team2:
-			startingGoalies.T2 = n.AwayGoaltender
+		if n.AwayTeam == team1 {
+			startingGoalies = append(startingGoalies, n.AwayGoaltender)
+		} else if n.AwayTeam == team2 {
+			startingGoalies = append(startingGoalies, n.AwayGoaltender)
 		}
 	}
 	log.Println(startingGoalies)

@@ -17,3 +17,25 @@ type Player struct {
 	Goals              float64 `json:"Goals"`
 	Assists            float64 `json:"Assists"`
 }
+
+type Goalie struct {
+	PlayerID  int    `json:"PlayerID"`
+	TeamID    int    `json:"TeamID"`
+	Team      string `json:"Team"`
+	FirstName string `json:"FirstName"`
+	LastName  string `json:"LastName"`
+	Confirmed bool   `json:"Confirmed"`
+}
+
+type Goalies []Goalie
+
+type Game struct {
+	HomeTeamID     int    `json:"HomeTeamID"`
+	HomeTeam       string `json:"HomeTeam"`
+	AwayTeamID     int    `json:"AwayTeamID"`
+	AwayTeam       string `json:"AwayTeam"`
+	HomeGoaltender Goalie `json:"HomeGoaltender"`
+	AwayGoaltender Goalie `json:"AwayGoaltender"`
+}
+
+type Games []Game
