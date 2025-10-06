@@ -7,7 +7,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"sync"
 	"time"
 )
 
@@ -15,9 +14,7 @@ const (
 	SportsDataAPIBaseURL = "https://api.sportsdata.io/v3/nhl"
 )
 
-func GetStartingGoalies(wg *sync.WaitGroup) (Games, error) {
-	defer wg.Done()
-
+func GetStartingGoalies() (Games, error) {
 	date := time.Now().Format("2006-01-02")
 	sportsDataUrl := SportsDataAPIBaseURL + "/projections/json/StartingGoaltendersByDate/" + date
 

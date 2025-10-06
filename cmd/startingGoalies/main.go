@@ -11,6 +11,11 @@ import (
 	"github.com/joho/godotenv"
 )
 
+type result struct {
+	goalies sportsData.Goalies
+	err     error
+}
+
 func main() {
 	godotenv.Load("../../.env")
 
@@ -27,17 +32,28 @@ func main() {
 	yahoo := yahoo.NewYahooClient()
 
 	var wg sync.WaitGroup
+
+	resultChan := make(chan result, 1)
+
 	wg.Add(2)
 	go yahoo.RefreshAuth(&wg)
-	games, err := sportsData.GetStartingGoalies(&wg)
+	go func() {
+		defer wg.Done()
+		games, err := sportsData.GetStartingGoalies()
+		if err != nil {
+			resultChan <- result{err: err}
+			return
+		}
+		startingGoalies := goalies.GetTeamStartingGoalies(games)
+		resultChan <- result{goalies: startingGoalies, err: nil}
+	}()
 	wg.Wait()
 
-	startingGoalies := goalies.GetTeamStartingGoalies(games)
-
-	if err != nil {
+	res := <-resultChan
+	if res.err != nil {
 		os.Exit(1)
 	}
-	yahoo.SwapPlayers(startingGoalies)
+	yahoo.SwapPlayers(res.goalies)
 
 	log.Printf("Ending Program\n")
 }
