@@ -53,6 +53,11 @@ func main() {
 	if res.err != nil {
 		os.Exit(1)
 	}
+	if len(res.goalies) == 0 {
+		log.Println("No starting goalies found.")
+		os.Exit(0)
+	}
+
 	yahoo.SwapPlayers(res.goalies)
 
 	log.Printf("Ending Program\n")
