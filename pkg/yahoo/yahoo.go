@@ -78,23 +78,23 @@ func (yc *YahooClient) RefreshAuth(wg *sync.WaitGroup) {
 	}
 }
 
-func (yc *YahooClient) GetRosterPlayers() ([]Player, error) {
+func (yc *YahooClient) GetRosterPlayers() (Players, error) {
 	url := YahooFantasyAPIBaseURL + "/team/" + os.Getenv("YAHOO_LEAGUE_ID") + ".t." + os.Getenv("YAHOO_TEAM_ID") + "/roster/players"
 	respBody, err := yc.sendXMLRequest(http.MethodGet, url, nil)
 
 	if err != nil {
 		email.SendEmail(respBody)
-		log.Fatalln("Failed to get starting goalies")
-		return []Player{}, err
+		log.Fatalln("Failed to get roster players")
+		return Players{}, err
 	}
 	var fantasyContent FantasyContent
 	err = xml.Unmarshal([]byte(respBody), &fantasyContent)
 	if err != nil {
 		log.Println("Error unmarshaling XML:", err)
-		return []Player{}, err
+		return Players{}, err
 	}
 
-	return fantasyContent.Team.Roster.Players.PlayerList, nil
+	return fantasyContent.Team.Roster.Players, nil
 }
 
 func (yc *YahooClient) SwapPlayers(teamGoalies sportsData.Goalies) {
