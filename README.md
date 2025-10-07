@@ -105,10 +105,6 @@ This project includes automated GitHub Actions workflows for continuous integrat
 
 **File**: `.github/workflows/starting-goalies.yml`
 
-**Schedule**: Runs automatically at:
-- Every 15 minutes from 12:45 AM - 2:59 AM ET (early morning games)
-- Every 15 minutes from 3:45 PM - 11:59 PM ET (regular games)
-
 **Manual Triggers**:
 - Repository dispatch event with type `run-goalies`
 - Manual workflow dispatch
