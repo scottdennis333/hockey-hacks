@@ -78,7 +78,24 @@ To find the Yahoo Player ID for your goalies:
 
 1. Sign up for a free trail at [SportsData.io](https://sportsdata.io/)
 2. Subscribe to the NHL API
-3. Get your API key from the dashboard
+3. Get your API key from the dashboard and update your `.env`
+4. Update the team abbreviations in your `.env`
+
+### Last Names
+1. Update your `.env` to include your goalies last names
+
+### Email Notifications (Optional)
+
+Email notifications are disabled by default. To enable email alerts for Yahoo API failures:
+
+1. **Configure Email Settings**: Update your `.env` file with Gmail credentials
+   - Uses Gmail [App Passwords](https://support.google.com/mail/answer/185833?hl=en) for secure authentication
+   - Add `EMAIL_ADDRESS` and `EMAIL_PASSWORD` to your `.env` file
+
+2. **Enable Email Flag**: Run the program with the `-email` flag:
+   ```bash
+   go run cmd/startingGoalies/main.go -email
+   ```
 
 ## Usage
 

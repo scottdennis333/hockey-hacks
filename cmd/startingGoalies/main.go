@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"hockey-hacks/pkg/goalies"
 	"hockey-hacks/pkg/sportsData"
 	"hockey-hacks/pkg/yahoo"
@@ -17,6 +18,10 @@ type result struct {
 }
 
 func main() {
+	// Parse command line flags
+	enableEmail := flag.Bool("email", false, "Enable email notifications on failures")
+	flag.Parse()
+
 	godotenv.Load("../../.env")
 
 	f, err := os.OpenFile("./logs.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
@@ -28,8 +33,9 @@ func main() {
 	log.SetOutput(f)
 
 	log.Println("Starting Program")
+	log.Printf("Email notifications: %t", *enableEmail)
 
-	yahoo := yahoo.NewYahooClient()
+	yahoo := yahoo.NewYahooClient(*enableEmail)
 
 	var wg sync.WaitGroup
 

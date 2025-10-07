@@ -34,11 +34,14 @@ const (
 )
 
 type YahooClient struct {
-	Auth YahooAuth
+	Auth        YahooAuth
+	EnableEmail bool
 }
 
-func NewYahooClient() *YahooClient {
-	return &YahooClient{}
+func NewYahooClient(enableEmail bool) *YahooClient {
+	return &YahooClient{
+		EnableEmail: enableEmail,
+	}
 }
 
 func (yc *YahooClient) RefreshAuth(wg *sync.WaitGroup) {
@@ -72,7 +75,9 @@ func (yc *YahooClient) RefreshAuth(wg *sync.WaitGroup) {
 	if resp.StatusCode == 200 {
 		json.Unmarshal([]byte(body), &yc.Auth)
 	} else {
-		email.SendEmail(body)
+		if yc.EnableEmail {
+			email.SendEmail(body)
+		}
 		log.Fatalf("Yahoo Auth Failed: %s", string(body))
 		os.Exit(1)
 	}
@@ -83,7 +88,9 @@ func (yc *YahooClient) GetRosterPlayers() (Players, error) {
 	respBody, err := yc.sendXMLRequest(http.MethodGet, url, nil)
 
 	if err != nil {
-		email.SendEmail(respBody)
+		if yc.EnableEmail {
+			email.SendEmail(respBody)
+		}
 		log.Fatalln("Failed to get roster players")
 		return Players{}, err
 	}
