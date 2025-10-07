@@ -4,7 +4,7 @@ A simple Go web server that handles the Yahoo Fantasy Sports OAuth2 authenticati
 
 ## Purpose
 
-This server automates the OAuth2 flow to get a Yahoo refresh token, which is required for the main Hockey Hacks application to access Yahoo Fantasy Sports APIs.
+This server automates the OAuth2 flow to get a Yahoo refresh token, which is required for the main Hockey Hacks application to access Yahoo Fantasy Sports APIs. Yahoo requires the redirect uri to use `https`, so we use ngrok to create a secure tunnel.
 
 ## How It Works
 
