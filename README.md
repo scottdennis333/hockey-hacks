@@ -54,12 +54,25 @@ cp .env.example .env
 3. Get your Client ID and Client Secret and update the `.env`
 4. Generate a refresh token using OAuth2 flow (see detailed steps below)
 5. Find your League ID and Team ID from your Yahoo Fantasy URL (see detailed steps below)
+6. Find your goalie Player IDs (see instructions below)
 
 #### Getting a Yahoo Refresh Token, League ID and Team ID
 
 For detailed instructions on obtaining your Yahoo refresh token, league ID, and team ID, see the [Server README](server/README.md).
 
 The server directory contains a standalone OAuth2 server that automates the Yahoo authentication flow and helps you extract the required IDs from the Yahoo Fantasy Sports API.
+
+#### Finding Yahoo Player IDs
+
+To find the Yahoo Player ID for your goalies:
+
+1. Go to the player's page on Yahoo Sports (e.g., `https://sports.yahoo.com/nhl/players/7713/`)
+2. The Player ID is the **last digits in the URL** (in this example: `7713`)
+3. Add the same prefix as your league id get the full Player ID format: `465.p.7713`
+   - Where `465` is your game ID and `7713` is the player's Yahoo ID
+4. Update your `.env` file with the complete Player IDs
+
+**Example**: For goalie Anthony Stolarz at `https://sports.yahoo.com/nhl/players/5734/`, the Player ID would be `465.p.5734`
 
 ### SportsData.io Setup
 
@@ -121,4 +134,7 @@ This project includes automated GitHub Actions workflows for continuous integrat
 
 1. **Configure Secrets**: Add a repository secret named `SECRETS` containing your `.env` file
 2. **Enable Actions**: Ensure GitHub Actions are enabled in your repository settings
+
+
+
 
