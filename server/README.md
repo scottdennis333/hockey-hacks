@@ -82,35 +82,20 @@ You should see:
 3. Log in with your Yahoo account
 4. Authorize the Hockey Hacks application
 5. You'll be redirected back to the server
-6. Check your terminal for the token response
 
-### 3. Copy the Refresh Token
+### 3. Copy the .env Variables
 
 The server will output something like:
 
-```json
-🎉 Token response:
-{
-  "access_token": "YOUR_ACCESS_TOKEN",
-  "refresh_token": "YOUR_REFRESH_TOKEN_HERE",
-  "token_type": "bearer",
-  "expires_in": 3600
-}
+```
+📝 Add these to your .env file:
+
+YAHOO_REFRESH_TOKEN=ANNX5Wh5vsCDRbL8T5lzjNx7pNNg~001~vpBrPDGnJXvke8VRxNkvNEef
+YAHOO_LEAGUE_ID=465.l.1234
+YAHOO_TEAM_ID=8
+
+✅ You can now close this page and stop the server (Ctrl+C)
 ```
 
-Copy the `refresh_token` value and update your `.env` file
+Copy the values and update your `.env` file
 
-### 4. League ID and Team ID
-
-- Use the `access_token` to get the `league_key` and update your `.env` for `YAHOO_LEAGUE_ID`.
-It should look like `465.l.12345`
-```bash
-curl -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
-     "https://fantasysports.yahooapis.com/fantasy/v2/users;use_login=1/games;game_keys=nhl/leagues?format=json" | grep league_key
-```
-
-- Use the `access_token` and `league_key` to get your `team_id` and update `.env`.
-```bash
-curl -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
-  "https://fantasysports.yahooapis.com/fantasy/v2/league/YOUR_LEAGUE_ID/teams?format=json"
-```
