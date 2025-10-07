@@ -123,6 +123,6 @@ This project includes automated GitHub Actions workflows for continuous integrat
 
 ### Setting Up GitHub Actions
 
-1. **Configure Secrets**: Add a repository secret named `SECRETS` containing a JSON object with all your `.env`
+1. **Configure Secrets**: Add a repository secret named `SECRETS` containing your `.env` file
 2. **Enable Actions**: Ensure GitHub Actions are enabled in your repository settings
 

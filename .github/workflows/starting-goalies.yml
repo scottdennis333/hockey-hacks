@@ -26,9 +26,9 @@ jobs:
             go.sum
             go.mod
 
-      - name: Create .env file from JSON secret
+      - name: Create .env file from secret
         run: |
-          echo '${{ secrets.SECRETS }}' | jq -r 'to_entries[] | "\(.key)=\(.value)"' > .env
+          echo '${{ secrets.SECRETS }}' > .env
 
       - name: Try to restore cached binary
         uses: actions/cache/restore@v4
