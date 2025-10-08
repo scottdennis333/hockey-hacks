@@ -134,17 +134,17 @@ func (yc *YahooClient) SwapPlayers(teamGoalies sportsData.Goalies) {
 		if goalie.Team == team1Abbr {
 			// Team 1 goalie starting, bench team 2
 			if goalie.LastName == team1G1Last {
-				team1G1.Position, team1G2.Position = PositionGoalie, PositionBench
+				team1G1.Position, team1G2.Position = PositionGoalie, PositionGoalie
 			} else if goalie.LastName == team1G2Last {
-				team1G1.Position, team1G2.Position = PositionBench, PositionGoalie
+				team1G1.Position, team1G2.Position = PositionGoalie, PositionGoalie
 			}
 			team2G1.Position, team2G2.Position = PositionBench, PositionBench
 		} else {
 			// Team 2 goalie starting, bench team 1
 			if goalie.LastName == team2G1Last {
-				team2G1.Position, team2G2.Position = PositionGoalie, PositionBench
+				team2G1.Position, team2G2.Position = PositionGoalie, PositionGoalie
 			} else if goalie.LastName == team2G2Last {
-				team2G1.Position, team2G2.Position = PositionBench, PositionGoalie
+				team2G1.Position, team2G2.Position = PositionGoalie, PositionGoalie
 			}
 			team1G1.Position, team1G2.Position = PositionBench, PositionBench
 		}
