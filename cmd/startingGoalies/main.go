@@ -18,7 +18,6 @@ type result struct {
 }
 
 func main() {
-	// Parse command line flags
 	enableEmail := flag.Bool("email", false, "Enable email notifications on failures")
 	flag.Parse()
 
