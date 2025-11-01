@@ -1,0 +1,64 @@
+{
+    "players": [
+        {
+            "name": "Auston Matthews",
+            "team": "TOR"
+        },
+        {
+            "name": "Wyatt Johnston",
+            "team": "DAL"
+        },
+        {
+            "name": "Evgeni Malkin",
+            "team": "PIT"
+        },
+        {
+            "name": "JJ Peterka",
+            "team": "UTA"
+        },
+        {
+            "name": "Frank Nazar",
+            "team": "CHI"
+        },
+        {
+            "name": "Alex Ovechkin",
+            "team": "WAS"
+        },
+        {
+            "name": "Will Smith",
+            "team": "SJ"
+        },
+        {
+            "name": "Nikolaj Ehlers",
+            "team": "CAR"
+        },
+        {
+            "name": "Quinn Hughes",
+            "team": "VAN"
+        },
+        {
+            "name": "Lane Hutson",
+            "team": "MON"
+        },
+        {
+            "name": "Brandt Clarke",
+            "team": "LA"
+        },
+        {
+            "name": "Anthony Cirelli",
+            "team": "TB"
+        },
+        {
+            "name": "Teuvo Teravainen",
+            "team": "CHI"
+        },
+        {
+            "name": "Jaden Schwartz",
+            "team": "SEA"
+        },
+        {
+            "name": "Troy Terry",
+            "team": "ANA"
+        }
+    ]
+}

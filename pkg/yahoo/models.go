@@ -133,6 +133,8 @@ type Player struct {
 	EligiblePositions  EligiblePositions `xml:"eligible_positions"`
 	SelectedPosition   SelectedPosition  `xml:"selected_position"`
 	IsEditable         int               `xml:"is_editable"`
+    Status             string            `xml:"status"`
+    TeamAbbr           string            `xml:"editorial_team_abbr"`
 }
 
 type Name struct {
@@ -163,4 +165,13 @@ type SelectedPosition struct {
 	Date         string `xml:"date"`
 	Position     string `xml:"position"`
 	IsFlex       int    `xml:"is_flex"`
+}
+
+type OptimizedRoster struct {
+	C    []Player
+	LW   []Player
+	RW   []Player
+	D    []Player
+	Util []Player
+	BN   []Player
 }

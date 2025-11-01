@@ -26,6 +26,11 @@ const (
 	// Position constants
 	PositionGoalie = "G"
 	PositionBench  = "BN"
+    PositionC      = "C"
+    PositionLW     = "LW"
+    PositionRW     = "RW"
+    PositionD      = "D"
+    PositionUtil   = "Util"
 
 	// Transaction constants
 	TransactionAddDrop = "add/drop"
@@ -84,7 +89,7 @@ func (yc *YahooClient) RefreshAuth(wg *sync.WaitGroup) {
 }
 
 func (yc *YahooClient) GetRosterPlayers() (Players, error) {
-	url := YahooFantasyAPIBaseURL + "/team/" + os.Getenv("YAHOO_LEAGUE_ID") + ".t." + os.Getenv("YAHOO_TEAM_ID") + "/roster/players"
+	url := YahooFantasyAPIBaseURL + "/team/" + os.Getenv("YAHOO_LEAGUE_ID") + ".t." + os.Getenv("YAHOO_TEAM_ID") + "/roster/players?out=status"
 	respBody, err := yc.sendXMLRequest(http.MethodGet, url, nil)
 
 	if err != nil {
@@ -175,11 +180,44 @@ func (yc *YahooClient) SwapPlayers(teamGoalies sportsData.Goalies) {
 	yc.sendXMLRequest(http.MethodPut, yahooURL, requestBody)
 }
 
+func (yc *YahooClient) SetRoster(roster OptimizedRoster) {
+    var requestBody SwapPlayerRequest
+	requestBody.Roster.CoverageType = "date"
+	requestBody.Roster.Date = time.Now().Format(time.DateOnly)
+
+    var playersToUpdate []SwapPlayer
+    for _, player := range roster.C {
+        playersToUpdate = append(playersToUpdate, SwapPlayer{PlayerKey: player.PlayerKey, Position: PositionC})
+    }
+    for _, player := range roster.LW {
+        playersToUpdate = append(playersToUpdate, SwapPlayer{PlayerKey: player.PlayerKey, Position: PositionLW})
+    }
+    for _, player := range roster.RW {
+        playersToUpdate = append(playersToUpdate, SwapPlayer{PlayerKey: player.PlayerKey, Position: PositionRW})
+    }
+    for _, player := range roster.D {
+        playersToUpdate = append(playersToUpdate, SwapPlayer{PlayerKey: player.PlayerKey, Position: PositionD})
+    }
+    for _, player := range roster.Util {
+        playersToUpdate = append(playersToUpdate, SwapPlayer{PlayerKey: player.PlayerKey, Position: PositionUtil})
+    }
+    for _, player := range roster.BN {
+        playersToUpdate = append(playersToUpdate, SwapPlayer{PlayerKey: player.PlayerKey, Position: PositionBench})
+    }
+
+    requestBody.Roster.Players.Player = playersToUpdate
+
+    yahooURL := YahooFantasyAPIBaseURL + "/team/" + os.Getenv("YAHOO_LEAGUE_ID") + ".t." + os.Getenv("YAHOO_TEAM_ID") + "/roster"
+
+	yc.sendXMLRequest(http.MethodPut, yahooURL, requestBody)
+}
+
+
 func (yc *YahooClient) addDrop(add string, drop string) {
 	var requestBody AddDropPlayerRequest
 	requestBody.Transaction.Type = TransactionAddDrop
 
-	var addPlayer AddDropPlayer
+	var addPlayer AddDrop-DropPlayer
 	addPlayer.PlayerKey = add
 	addPlayer.TransactionData.Type = TransactionAdd
 	addPlayer.TransactionData.DestinationTeamKey = os.Getenv("YAHOO_LEAGUE_ID") + ".t." + os.Getenv("YAHOO_TEAM_ID")
