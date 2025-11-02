@@ -20,14 +20,9 @@ jobs:
               with:
                   go-version: "1.21"
 
-            - name: Create .env file
+            - name: Create .env file from secret
               run: |
-                  cat > .env << EOF
-                  YAHOO_CLIENT_ID=${{ secrets.YAHOO_CLIENT_ID }}
-                  YAHOO_CLIENT_SECRET=${{ secrets.YAHOO_CLIENT_SECRET }}
-                  YAHOO_REFRESH_TOKEN=${{ secrets.YAHOO_REFRESH_TOKEN }}
-                  SPORTS_DATA_KEY=${{ secrets.SPORTS_DATA_KEY }}
-                  EOF
+                echo '${{ secrets.SECRETS }}' > .env
 
             - name: Run Lineup Optimizer
               working-directory: ./cmd/optimizeLineup
