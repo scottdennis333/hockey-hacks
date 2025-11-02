@@ -6,8 +6,8 @@ import (
 
 const (
 	// Roster spot counts
-	maxCenters   = 3
-	maxLeftWings = 2
+	maxCenters    = 3
+	maxLeftWings  = 2
 	maxRightWings = 2
 	maxDefensemen = 3
 	maxUtils      = 1
@@ -15,12 +15,12 @@ const (
 
 // OptimizedLineup represents the final, optimized lineup.
 type OptimizedLineup struct {
-	C  []yahoo.Player
-	LW []yahoo.Player
-	RW []yahoo.Player
-	D  []yahoo.Player
+	C    []yahoo.Player
+	LW   []yahoo.Player
+	RW   []yahoo.Player
+	D    []yahoo.Player
 	Util []yahoo.Player
-	BN []yahoo.Player
+	BN   []yahoo.Player
 }
 
 // OptimizeLineup takes a sorted list of players and returns the optimized lineup.
@@ -41,6 +41,11 @@ func OptimizeLineup(sortedPlayers []yahoo.Player) OptimizedLineup {
 	for _, player := range sortedPlayers {
 		if _, ok := assignedPlayers[player.Name.Full]; ok {
 			continue // Skip players who have already been assigned a spot
+		}
+
+		// Skip players on IR/IR+, IR-NR, IR-LT
+		if player.Status == "IR" || player.Status == "IR+" || player.Status == "IR-NR" || player.Status == "IR-LT" {
+			continue
 		}
 
 		isAssigned := false
