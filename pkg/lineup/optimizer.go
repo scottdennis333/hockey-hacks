@@ -43,6 +43,11 @@ func OptimizeLineup(sortedPlayers []yahoo.Player) OptimizedLineup {
 			continue // Skip players who have already been assigned a spot
 		}
 
+		// Skip goalies - don't adjust their positions
+		if player.PositionType == "G" {
+			continue
+		}
+
 		// Skip players on IR/IR+, IR-NR, IR-LT
 		if player.Status == "IR" || player.Status == "IR+" || player.Status == "IR-NR" || player.Status == "IR-LT" {
 			continue
