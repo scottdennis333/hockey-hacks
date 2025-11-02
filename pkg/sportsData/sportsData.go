@@ -31,6 +31,23 @@ func GetStartingGoalies() (Games, error) {
 	return games, nil
 }
 
+func GetGamesByDate() (Games, error) {
+	date := time.Now().Format("2006-01-02")
+	sportsDataUrl := SportsDataAPIBaseURL + "/scores/json/GamesByDate/" + date
+
+	respBody, err := sendRequest(http.MethodGet, sportsDataUrl, nil)
+
+	if err != nil {
+		email.SendEmail(respBody)
+		log.Fatalln("Failed to get games by date")
+		return nil, err
+	}
+	var games Games
+	json.Unmarshal([]byte(respBody), &games)
+
+	return games, nil
+}
+
 func sendRequest(method string, url string, body io.Reader) ([]byte, error) {
 	client := http.Client{}
 	req, err := http.NewRequest(method, url, nil)

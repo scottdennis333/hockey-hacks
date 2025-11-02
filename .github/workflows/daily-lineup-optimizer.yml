@@ -1,0 +1,43 @@
+name: Daily Lineup Optimizer
+
+on:
+    schedule:
+        # Runs at 8am Central Time (1pm UTC during CST, 2pm UTC during CDT)
+        # Using 1pm UTC to cover CST (Standard Time)
+        - cron: "0 13 * * *"
+    workflow_dispatch: # Allows manual triggering
+
+jobs:
+    optimize-lineup:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            - name: Set up Go
+              uses: actions/setup-go@v5
+              with:
+                  go-version: "1.21"
+
+            - name: Create .env file
+              run: |
+                  cat > .env << EOF
+                  YAHOO_CLIENT_ID=${{ secrets.YAHOO_CLIENT_ID }}
+                  YAHOO_CLIENT_SECRET=${{ secrets.YAHOO_CLIENT_SECRET }}
+                  YAHOO_REFRESH_TOKEN=${{ secrets.YAHOO_REFRESH_TOKEN }}
+                  SPORTS_DATA_KEY=${{ secrets.SPORTS_DATA_KEY }}
+                  EOF
+
+            - name: Run Lineup Optimizer
+              working-directory: ./cmd/optimizeLineup
+              run: |
+                  go run main.go
+
+            - name: Upload logs
+              if: always()
+              uses: actions/upload-artifact@v4
+              with:
+                  name: optimizer-logs-${{ github.run_number }}
+                  path: cmd/optimizeLineup/logs.log
+                  retention-days: 7
