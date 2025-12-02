@@ -9,8 +9,16 @@
             "team": "DAL"
         },
         {
+            "name": "Will Smith",
+            "team": "SJ"
+        },
+        {
             "name": "Evgeni Malkin",
             "team": "PIT"
+        },
+        {
+            "name": "Alex Ovechkin",
+            "team": "WAS"
         },
         {
             "name": "JJ Peterka",
@@ -19,14 +27,6 @@
         {
             "name": "Frank Nazar",
             "team": "CHI"
-        },
-        {
-            "name": "Alex Ovechkin",
-            "team": "WAS"
-        },
-        {
-            "name": "Will Smith",
-            "team": "SJ"
         },
         {
             "name": "Nikolaj Ehlers",
@@ -45,6 +45,10 @@
             "team": "LA"
         },
         {
+            "name": "Troy Terry",
+            "team": "ANA"
+        },
+        {
             "name": "Anthony Cirelli",
             "team": "TB"
         },
@@ -53,12 +57,8 @@
             "team": "CHI"
         },
         {
-            "name": "Jaden Schwartz",
-            "team": "SEA"
-        },
-        {
-            "name": "Troy Terry",
-            "team": "ANA"
+            "name": "Jamie Benn",
+            "team": "DAL"
         }
     ]
 }
