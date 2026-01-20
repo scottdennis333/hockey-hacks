@@ -186,22 +186,30 @@ func (yc *YahooClient) SetRoster(roster OptimizedRoster) {
 	requestBody.Roster.Date = time.Now().Format(time.DateOnly)
 
 	var playersToUpdate []SwapPlayer
+
+	log.Println("Setting Yahoo Roster:")
 	for _, player := range roster.C {
+		log.Printf("%s - C", player.Name.Full)
 		playersToUpdate = append(playersToUpdate, SwapPlayer{PlayerKey: player.PlayerKey, Position: PositionC})
 	}
 	for _, player := range roster.LW {
+		log.Printf("%s - LW", player.Name.Full)
 		playersToUpdate = append(playersToUpdate, SwapPlayer{PlayerKey: player.PlayerKey, Position: PositionLW})
 	}
 	for _, player := range roster.RW {
+		log.Printf("%s - RW", player.Name.Full)
 		playersToUpdate = append(playersToUpdate, SwapPlayer{PlayerKey: player.PlayerKey, Position: PositionRW})
 	}
 	for _, player := range roster.D {
+		log.Printf("%s - D", player.Name.Full)
 		playersToUpdate = append(playersToUpdate, SwapPlayer{PlayerKey: player.PlayerKey, Position: PositionD})
 	}
 	for _, player := range roster.Util {
+		log.Printf("%s - Util", player.Name.Full)
 		playersToUpdate = append(playersToUpdate, SwapPlayer{PlayerKey: player.PlayerKey, Position: PositionUtil})
 	}
 	for _, player := range roster.BN {
+		log.Printf("%s - BN", player.Name.Full)
 		playersToUpdate = append(playersToUpdate, SwapPlayer{PlayerKey: player.PlayerKey, Position: PositionBench})
 	}
 
